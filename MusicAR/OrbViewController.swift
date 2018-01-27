@@ -7,6 +7,7 @@ import ARKit
 class OrbViewController: UIViewController, ARSCNViewDelegate {
     
     var sceneView: ARSCNView!
+    var orb: Orb?
     var planes = [OverlayPlane]()
     
     override func viewDidLoad() {
@@ -27,7 +28,7 @@ class OrbViewController: UIViewController, ARSCNViewDelegate {
         insertLighting(position: SCNVector3(1.0,2.0,-1))
     }
     
-    private func insertLighting(position :SCNVector3) {
+    private func insertLighting(position: SCNVector3) {
         
         let directionalLight = SCNLight()
         directionalLight.type = .directional
@@ -40,6 +41,8 @@ class OrbViewController: UIViewController, ARSCNViewDelegate {
         directionalNode.eulerAngles = SCNVector3(GLKMathDegreesToRadians(-90), 0, GLKMathDegreesToRadians(-45))
         self.sceneView.scene.rootNode.addChildNode(directionalNode)
     }
+    
+    // MARK: ARSCNViewDelegate methods
     
     func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
         let estimate: ARLightEstimate? = sceneView.session.currentFrame?.lightEstimate
@@ -56,13 +59,18 @@ class OrbViewController: UIViewController, ARSCNViewDelegate {
             return
         }
         
-        let orb = Orb(anchor: anchor as! ARPlaneAnchor)
-        node.addChildNode(orb)
-        // TODO: don't add new orb already one
+        if let arAnchor = anchor as? ARPlaneAnchor {
+            if self.orb == nil {
+                self.orb = Orb(anchor: arAnchor)
+                node.addChildNode(self.orb!)
+            }
+            
+            let plane = OverlayPlane(anchor: arAnchor)
+            self.planes.append(plane)
+            node.addChildNode(plane)
+        }
         
-        let plane = OverlayPlane(anchor: anchor as! ARPlaneAnchor)
-        self.planes.append(plane)
-        node.addChildNode(plane)
+
     }
     
     func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
@@ -82,10 +90,7 @@ class OrbViewController: UIViewController, ARSCNViewDelegate {
         super.viewWillAppear(animated)
         
         let configuration = ARWorldTrackingConfiguration()
-        
-        // TODO: add logic to  handle orb placement
         configuration.planeDetection = .horizontal
-        
         sceneView.session.run(configuration)
     }
     
