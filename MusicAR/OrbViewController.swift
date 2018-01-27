@@ -23,26 +23,6 @@ class OrbViewController: UIViewController, ARSCNViewDelegate {
         self.sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints,ARSCNDebugOptions.showWorldOrigin]
         
         let scene = SCNScene()
-        let sphere = SCNSphere(radius: 0.2)
-        
-        let sphereNode = SCNNode()
-        sphereNode.geometry = sphere
-        sphereNode.position = SCNVector3(0,0.1,-1)
-        
-        let sphereMaterial = SCNMaterial()
-        sphereMaterial.lightingModel = SCNMaterial.LightingModel.physicallyBased
-        let materialFilePrefix = "greasy-pan-2"
-//        let materialFilePrefix = "rustediron-streaks"
-        sphereMaterial.diffuse.contents = UIImage(named: "\(materialFilePrefix)-albedo.png")
-        sphereMaterial.roughness.contents = UIImage(named: "\(materialFilePrefix)-roughness.png")
-        sphereMaterial.metalness.contents = UIImage(named: "\(materialFilePrefix)-metal.png")
-        sphereMaterial.normal.contents = UIImage(named: "\(materialFilePrefix)-normal.png")
-        sphereNode.geometry?.materials = [sphereMaterial]
-        sphereNode.runAction(SCNAction.repeatForever(SCNAction.rotateBy(x: 10, y: 1, z: 1, duration: 30)))
-        
-        scene.rootNode.addChildNode(sphereNode)
-        
-        // Set the scene to the view
         sceneView.scene = scene
         insertLighting(position: SCNVector3(1.0,2.0,-1))
     }
@@ -75,6 +55,10 @@ class OrbViewController: UIViewController, ARSCNViewDelegate {
         if !(anchor is ARPlaneAnchor) {
             return
         }
+        
+        let orb = Orb(anchor: anchor as! ARPlaneAnchor)
+        node.addChildNode(orb)
+        // TODO: don't add new orb already one
         
         let plane = OverlayPlane(anchor: anchor as! ARPlaneAnchor)
         self.planes.append(plane)
