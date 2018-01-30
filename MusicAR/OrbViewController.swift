@@ -21,7 +21,7 @@ class OrbViewController: UIViewController, ARSCNViewDelegate {
         
         // Show statistics such as fps and timing information
         sceneView.showsStatistics = true
-        self.sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints,ARSCNDebugOptions.showWorldOrigin]
+        self.sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints]
         
         let scene = SCNScene()
         sceneView.scene = scene
@@ -63,14 +63,13 @@ class OrbViewController: UIViewController, ARSCNViewDelegate {
             if self.orb == nil {
                 self.orb = Orb(anchor: arAnchor)
                 node.addChildNode(self.orb!)
+                self.orb!.beginPlayingMusic()
             }
             
             let plane = OverlayPlane(anchor: arAnchor)
             self.planes.append(plane)
             node.addChildNode(plane)
         }
-        
-
     }
     
     func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {

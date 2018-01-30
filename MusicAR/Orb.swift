@@ -1,10 +1,16 @@
 import Foundation
 import SceneKit
 import ARKit
+import AVFoundation
 
-class Orb: SCNNode {
+class Orb: SCNNode, AVAudioPlayerDelegate {
     
-    var anchor :ARPlaneAnchor
+    var anchor: ARPlaneAnchor
+    var orbParticleSystem: SCNParticleSystem!
+    var audioPlayer: AVAudioPlayer!
+    var audioTimer: Timer?
+    var isPlaying = false
+    var baseSoundPower: Float = -200
     
     init(anchor: ARPlaneAnchor) {
         
@@ -14,7 +20,6 @@ class Orb: SCNNode {
     }
     
     private func setup() {
-        
         let sphere = SCNSphere(radius: 0.1)
         
         let sphereNode = SCNNode()
@@ -40,14 +45,75 @@ class Orb: SCNNode {
     }
     
     func createSphericalEmission(color: UIColor, geometry: SCNGeometry) -> SCNParticleSystem {
-        let colorSphere = SCNParticleSystem(named: "ambient.scnp", inDirectory: nil)!
-        colorSphere.particleColor = color
-        colorSphere.emitterShape = geometry
-        return colorSphere
+        self.orbParticleSystem = SCNParticleSystem(named: "ambient.scnp", inDirectory: nil)!
+        self.orbParticleSystem.particleColor = color
+        self.orbParticleSystem.emitterShape = geometry
+        return self.orbParticleSystem
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    func beginPlayingMusic() {
+        if let audioFileURL = Bundle.main.url(forResource: "spiderManTheme", withExtension: "mp3") {
+            do {
+                self.audioPlayer = try AVAudioPlayer(contentsOf: audioFileURL)
+                self.audioPlayer.isMeteringEnabled = true
+                self.audioPlayer.delegate = self
+                DispatchQueue.main.async {
+                    if self.audioTimer == nil {
+                        self.audioTimer = Timer.scheduledTimer(timeInterval: 0.5,
+                                                               target: self,
+                                                               selector: #selector(self.monitorAudioPlayer),
+                                                               userInfo: nil,
+                                                               repeats: true)
+                    }
+                    self.playPauseMusic()
+                }
+            } catch {
+                print("Cannot init audio player: \(error.localizedDescription)")
+            }
+        }
+    }
+    
+    func playPauseMusic() {
+        if self.isPlaying {
+            self.audioPlayer.pause()
+        } else {
+            self.audioPlayer.play()
+        }
+        self.isPlaying = !self.isPlaying
+        print("isplaying?? \(self.isPlaying)")
+    }
+    
+    @objc func monitorAudioPlayer() {
+        self.audioPlayer.updateMeters()
+        guard self.audioPlayer.numberOfChannels > 0 else { return }
+        let peakPower = self.audioPlayer.peakPower(forChannel: 0)
+        print("Peak: \(peakPower)")
+        // TODO: get better baseline, average out first few peaks
+        if self.baseSoundPower < -160.0 {
+            self.baseSoundPower = peakPower
+        }
+        let valueInRange = (peakPower - self.baseSoundPower)/(0 - self.baseSoundPower)
+        let birthRate = valueInRange * 100 //(x - start)/(end - start)
+        print("birthrate: \(birthRate)")
+        self.orbParticleSystem.birthRate = CGFloat(birthRate)
+        print("valueInrange: \(valueInRange)")
+        let particleVelocity = valueInRange * 3
+        print("velocity: \(particleVelocity)")
+        self.orbParticleSystem.particleVelocity = CGFloat(particleVelocity)
+        let particleSize = valueInRange * 0.1
+        print("size: \(particleSize)")
+        self.orbParticleSystem.particleSize = CGFloat(particleSize)
+    }
+    
+    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        print("audio finished")
+        guard self.audioTimer != nil else { return }
+        self.audioTimer?.invalidate()
+        self.audioTimer = nil
     }
 }
 

@@ -18,6 +18,7 @@
 		6B16135B201855EC00F51853 /* rustediron-streaks-roughness.png in Resources */ = {isa = PBXBuildFile; fileRef = 6B161357201855EB00F51853 /* rustediron-streaks-roughness.png */; };
 		6B16135C201855EC00F51853 /* rustediron-streaks-metal.png in Resources */ = {isa = PBXBuildFile; fileRef = 6B161358201855EC00F51853 /* rustediron-streaks-metal.png */; };
 		6B941537201CF03D00CBEBF3 /* ambient.scnp in Resources */ = {isa = PBXBuildFile; fileRef = 6B941536201CF03D00CBEBF3 /* ambient.scnp */; };
+		6B941539201ED5B800CBEBF3 /* spiderManTheme.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 6B941538201ED5B800CBEBF3 /* spiderManTheme.mp3 */; };
 		6BA74A3A201C3DB20079194B /* streakedmetal-albedo.png in Resources */ = {isa = PBXBuildFile; fileRef = 6BA74A37201C3DB10079194B /* streakedmetal-albedo.png */; };
 		6BA74A3B201C3DB20079194B /* streakedmetal-metalness.png in Resources */ = {isa = PBXBuildFile; fileRef = 6BA74A38201C3DB20079194B /* streakedmetal-metalness.png */; };
 		6BA74A3C201C3DB20079194B /* streakedmetal-roughness.png in Resources */ = {isa = PBXBuildFile; fileRef = 6BA74A39201C3DB20079194B /* streakedmetal-roughness.png */; };
@@ -48,6 +49,7 @@
 		6B161357201855EB00F51853 /* rustediron-streaks-roughness.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rustediron-streaks-roughness.png"; sourceTree = "<group>"; };
 		6B161358201855EC00F51853 /* rustediron-streaks-metal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rustediron-streaks-metal.png"; sourceTree = "<group>"; };
 		6B941536201CF03D00CBEBF3 /* ambient.scnp */ = {isa = PBXFileReference; lastKnownFileType = file.scp; path = ambient.scnp; sourceTree = "<group>"; };
+		6B941538201ED5B800CBEBF3 /* spiderManTheme.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = spiderManTheme.mp3; sourceTree = "<group>"; };
 		6BA74A37201C3DB10079194B /* streakedmetal-albedo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "streakedmetal-albedo.png"; sourceTree = "<group>"; };
 		6BA74A38201C3DB20079194B /* streakedmetal-metalness.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "streakedmetal-metalness.png"; sourceTree = "<group>"; };
 		6BA74A39201C3DB20079194B /* streakedmetal-roughness.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "streakedmetal-roughness.png"; sourceTree = "<group>"; };
@@ -110,6 +112,7 @@
 				6BCAD9EF201CED3300D74914 /* colorParticles.scnp */,
 				6BCAD9F0201CED3300D74914 /* bokeh.png */,
 				6B941536201CF03D00CBEBF3 /* ambient.scnp */,
+				6B941538201ED5B800CBEBF3 /* spiderManTheme.mp3 */,
 			);
 			path = MusicAR;
 			sourceTree = "<group>";
@@ -195,6 +198,7 @@
 				6B16135C201855EC00F51853 /* rustediron-streaks-metal.png in Resources */,
 				6B16134320184F4900F51853 /* art.scnassets in Resources */,
 				6BA74A41201C3E9C0079194B /* greasy-pan-2-metal.png in Resources */,
+				6B941539201ED5B800CBEBF3 /* spiderManTheme.mp3 in Resources */,
 				6B16134D20184F4A00F51853 /* LaunchScreen.storyboard in Resources */,
 				6BCAD9EA201CE47400D74914 /* confetti.png in Resources */,
 				6B161359201855EC00F51853 /* rustediron-streaks-albedo.png in Resources */,
