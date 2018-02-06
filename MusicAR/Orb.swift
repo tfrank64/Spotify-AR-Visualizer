@@ -21,7 +21,7 @@ class Orb: SCNNode, AVAudioPlayerDelegate {
     }
     
     private func setup() {
-        let sphere = SCNSphere(radius: 0.1)
+        let sphere = SCNSphere(radius: 0.2)
         
         let sphereNode = SCNNode()
         sphereNode.geometry = sphere
@@ -66,7 +66,7 @@ class Orb: SCNNode, AVAudioPlayerDelegate {
                 self.audioPlayer.delegate = self
                 DispatchQueue.main.async {
                     if self.audioTimer == nil {
-                        self.audioTimer = Timer.scheduledTimer(timeInterval: 0.5,
+                        self.audioTimer = Timer.scheduledTimer(timeInterval: 0.2,
                                                                target: self,
                                                                selector: #selector(self.monitorAudioPlayer),
                                                                userInfo: nil,
@@ -94,27 +94,26 @@ class Orb: SCNNode, AVAudioPlayerDelegate {
         self.audioPlayer.updateMeters()
         guard self.audioPlayer.numberOfChannels > 0 else { return }
         let peakPower = self.audioPlayer.peakPower(forChannel: 0)
-        print("Peak: \(peakPower)")
 
+        // Get average start power as a baseline
         if self.audioChanges <= 5 {
             self.baseSoundPower = self.baseSoundPower + peakPower
             if self.audioChanges == 5 {
                 self.baseSoundPower = self.baseSoundPower / self.audioChanges
             }
-//            print("BasePow: \(self.baseSoundPower) with changes: \(self.audioChanges)")
             self.audioChanges += 1
             return
         }
         let valueInRange = (peakPower - self.baseSoundPower)/(0 - self.baseSoundPower)
         let birthRate = valueInRange * 300 //(x - start)/(end - start)
-        print("birthrate: \(birthRate)")
+//        print("birthrate: \(birthRate)")
         self.orbParticleSystem.birthRate = CGFloat(birthRate)
         print("valueInrange: \(valueInRange)")
-        let particleVelocity = valueInRange * 3
-        print("velocity: \(particleVelocity)")
+        let particleVelocity = valueInRange * 2
+//        print("velocity: \(particleVelocity)")
         self.orbParticleSystem.particleVelocity = CGFloat(particleVelocity)
-        let particleSize = valueInRange * 0.5
-        print("size: \(particleSize)")
+        let particleSize = valueInRange * 0.25
+//        print("size: \(particleSize)")
         self.orbParticleSystem.particleSize = CGFloat(particleSize)
     }
     

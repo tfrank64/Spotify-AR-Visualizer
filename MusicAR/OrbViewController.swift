@@ -1,14 +1,14 @@
 import UIKit
 import SceneKit
 import ARKit
-// place on center horizontal plane,make the size of ottoman.
-// add particle emission in different colors and intensities
 // clean up, fix force unwrapping
+// Have user pick color or "party mode". they pick song and go.
+// tap orb to play/pause, swipe to skip
 class OrbViewController: UIViewController, ARSCNViewDelegate {
     
     var sceneView: ARSCNView!
     var orb: Orb?
-    var planes = [OverlayPlane]()
+//    var planes = [OverlayPlane]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -66,23 +66,23 @@ class OrbViewController: UIViewController, ARSCNViewDelegate {
                 self.orb!.beginPlayingMusic()
             }
             
-            let plane = OverlayPlane(anchor: arAnchor)
-            self.planes.append(plane)
-            node.addChildNode(plane)
+//            let plane = OverlayPlane(anchor: arAnchor)
+//            self.planes.append(plane)
+//            node.addChildNode(plane)
         }
     }
     
     func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
         
-        let plane = self.planes.filter { plane in
-            return plane.anchor.identifier == anchor.identifier
-        }.first
-        
-        if plane == nil {
-            return
-        }
-        
-        plane?.update(anchor: anchor as! ARPlaneAnchor)
+//        let plane = self.planes.filter { plane in
+//            return plane.anchor.identifier == anchor.identifier
+//        }.first
+//
+//        if plane == nil {
+//            return
+//        }
+//
+//        plane?.update(anchor: anchor as! ARPlaneAnchor)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -99,7 +99,4 @@ class OrbViewController: UIViewController, ARSCNViewDelegate {
         // Pause the view's session
         sceneView.session.pause()
     }
-    
-    
 }
-

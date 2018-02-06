@@ -17,11 +17,9 @@
 		6B16135A201855EC00F51853 /* rustediron-streaks-normal.png in Resources */ = {isa = PBXBuildFile; fileRef = 6B161356201855EB00F51853 /* rustediron-streaks-normal.png */; };
 		6B16135B201855EC00F51853 /* rustediron-streaks-roughness.png in Resources */ = {isa = PBXBuildFile; fileRef = 6B161357201855EB00F51853 /* rustediron-streaks-roughness.png */; };
 		6B16135C201855EC00F51853 /* rustediron-streaks-metal.png in Resources */ = {isa = PBXBuildFile; fileRef = 6B161358201855EC00F51853 /* rustediron-streaks-metal.png */; };
+		6B394AFD202968C500EE9030 /* Circle@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6B394AFC202968C400EE9030 /* Circle@3x.png */; };
 		6B941537201CF03D00CBEBF3 /* ambient.scnp in Resources */ = {isa = PBXBuildFile; fileRef = 6B941536201CF03D00CBEBF3 /* ambient.scnp */; };
 		6B941539201ED5B800CBEBF3 /* spiderManTheme.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 6B941538201ED5B800CBEBF3 /* spiderManTheme.mp3 */; };
-		6BA74A3A201C3DB20079194B /* streakedmetal-albedo.png in Resources */ = {isa = PBXBuildFile; fileRef = 6BA74A37201C3DB10079194B /* streakedmetal-albedo.png */; };
-		6BA74A3B201C3DB20079194B /* streakedmetal-metalness.png in Resources */ = {isa = PBXBuildFile; fileRef = 6BA74A38201C3DB20079194B /* streakedmetal-metalness.png */; };
-		6BA74A3C201C3DB20079194B /* streakedmetal-roughness.png in Resources */ = {isa = PBXBuildFile; fileRef = 6BA74A39201C3DB20079194B /* streakedmetal-roughness.png */; };
 		6BA74A41201C3E9C0079194B /* greasy-pan-2-metal.png in Resources */ = {isa = PBXBuildFile; fileRef = 6BA74A3D201C3E980079194B /* greasy-pan-2-metal.png */; };
 		6BA74A42201C3E9C0079194B /* greasy-pan-2-normal.png in Resources */ = {isa = PBXBuildFile; fileRef = 6BA74A3E201C3E990079194B /* greasy-pan-2-normal.png */; };
 		6BA74A43201C3E9C0079194B /* greasy-pan-2-albedo.png in Resources */ = {isa = PBXBuildFile; fileRef = 6BA74A3F201C3E9A0079194B /* greasy-pan-2-albedo.png */; };
@@ -29,9 +27,6 @@
 		6BA74A47201C41040079194B /* OverlayPlane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BA74A45201C41040079194B /* OverlayPlane.swift */; };
 		6BA74A48201C41040079194B /* overlay_grid.png in Resources */ = {isa = PBXBuildFile; fileRef = 6BA74A46201C41040079194B /* overlay_grid.png */; };
 		6BA74A4A201C4D880079194B /* Orb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BA74A49201C4D870079194B /* Orb.swift */; };
-		6BCAD9E9201CE47400D74914 /* confettiParts.scnp in Resources */ = {isa = PBXBuildFile; fileRef = 6BCAD9E7201CE47400D74914 /* confettiParts.scnp */; };
-		6BCAD9EA201CE47400D74914 /* confetti.png in Resources */ = {isa = PBXBuildFile; fileRef = 6BCAD9E8201CE47400D74914 /* confetti.png */; };
-		6BCAD9F1201CED3300D74914 /* colorParticles.scnp in Resources */ = {isa = PBXBuildFile; fileRef = 6BCAD9EF201CED3300D74914 /* colorParticles.scnp */; };
 		6BCAD9F2201CED3300D74914 /* bokeh.png in Resources */ = {isa = PBXBuildFile; fileRef = 6BCAD9F0201CED3300D74914 /* bokeh.png */; };
 /* End PBXBuildFile section */
 
@@ -48,11 +43,9 @@
 		6B161356201855EB00F51853 /* rustediron-streaks-normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rustediron-streaks-normal.png"; sourceTree = "<group>"; };
 		6B161357201855EB00F51853 /* rustediron-streaks-roughness.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rustediron-streaks-roughness.png"; sourceTree = "<group>"; };
 		6B161358201855EC00F51853 /* rustediron-streaks-metal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rustediron-streaks-metal.png"; sourceTree = "<group>"; };
+		6B394AFC202968C400EE9030 /* Circle@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Circle@3x.png"; sourceTree = "<group>"; };
 		6B941536201CF03D00CBEBF3 /* ambient.scnp */ = {isa = PBXFileReference; lastKnownFileType = file.scp; path = ambient.scnp; sourceTree = "<group>"; };
 		6B941538201ED5B800CBEBF3 /* spiderManTheme.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = spiderManTheme.mp3; sourceTree = "<group>"; };
-		6BA74A37201C3DB10079194B /* streakedmetal-albedo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "streakedmetal-albedo.png"; sourceTree = "<group>"; };
-		6BA74A38201C3DB20079194B /* streakedmetal-metalness.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "streakedmetal-metalness.png"; sourceTree = "<group>"; };
-		6BA74A39201C3DB20079194B /* streakedmetal-roughness.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "streakedmetal-roughness.png"; sourceTree = "<group>"; };
 		6BA74A3D201C3E980079194B /* greasy-pan-2-metal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "greasy-pan-2-metal.png"; sourceTree = "<group>"; };
 		6BA74A3E201C3E990079194B /* greasy-pan-2-normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "greasy-pan-2-normal.png"; sourceTree = "<group>"; };
 		6BA74A3F201C3E9A0079194B /* greasy-pan-2-albedo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "greasy-pan-2-albedo.png"; sourceTree = "<group>"; };
@@ -60,9 +53,6 @@
 		6BA74A45201C41040079194B /* OverlayPlane.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OverlayPlane.swift; sourceTree = "<group>"; };
 		6BA74A46201C41040079194B /* overlay_grid.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = overlay_grid.png; sourceTree = "<group>"; };
 		6BA74A49201C4D870079194B /* Orb.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Orb.swift; sourceTree = "<group>"; };
-		6BCAD9E7201CE47400D74914 /* confettiParts.scnp */ = {isa = PBXFileReference; lastKnownFileType = file.scp; path = confettiParts.scnp; sourceTree = "<group>"; };
-		6BCAD9E8201CE47400D74914 /* confetti.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = confetti.png; sourceTree = "<group>"; };
-		6BCAD9EF201CED3300D74914 /* colorParticles.scnp */ = {isa = PBXFileReference; lastKnownFileType = file.scp; path = colorParticles.scnp; sourceTree = "<group>"; };
 		6BCAD9F0201CED3300D74914 /* bokeh.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bokeh.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -96,23 +86,21 @@
 		6B16133F20184F4900F51853 /* MusicAR */ = {
 			isa = PBXGroup;
 			children = (
-				6B161354201855CF00F51853 /* Textures */,
+				6B941536201CF03D00CBEBF3 /* ambient.scnp */,
 				6B16134020184F4900F51853 /* AppDelegate.swift */,
-				6BA74A49201C4D870079194B /* Orb.swift */,
 				6B16134220184F4900F51853 /* art.scnassets */,
+				6B16134920184F4A00F51853 /* Assets.xcassets */,
+				6BCAD9F0201CED3300D74914 /* bokeh.png */,
+				6B394AFC202968C400EE9030 /* Circle@3x.png */,
+				6B16134E20184F4A00F51853 /* Info.plist */,
+				6B16134B20184F4A00F51853 /* LaunchScreen.storyboard */,
+				6B16134620184F4A00F51853 /* Main.storyboard */,
+				6BA74A49201C4D870079194B /* Orb.swift */,
 				6B16134420184F4A00F51853 /* OrbViewController.swift */,
 				6BA74A46201C41040079194B /* overlay_grid.png */,
 				6BA74A45201C41040079194B /* OverlayPlane.swift */,
-				6B16134620184F4A00F51853 /* Main.storyboard */,
-				6B16134920184F4A00F51853 /* Assets.xcassets */,
-				6B16134B20184F4A00F51853 /* LaunchScreen.storyboard */,
-				6B16134E20184F4A00F51853 /* Info.plist */,
-				6BCAD9E7201CE47400D74914 /* confettiParts.scnp */,
-				6BCAD9E8201CE47400D74914 /* confetti.png */,
-				6BCAD9EF201CED3300D74914 /* colorParticles.scnp */,
-				6BCAD9F0201CED3300D74914 /* bokeh.png */,
-				6B941536201CF03D00CBEBF3 /* ambient.scnp */,
 				6B941538201ED5B800CBEBF3 /* spiderManTheme.mp3 */,
+				6B161354201855CF00F51853 /* Textures */,
 			);
 			path = MusicAR;
 			sourceTree = "<group>";
@@ -124,9 +112,6 @@
 				6BA74A3D201C3E980079194B /* greasy-pan-2-metal.png */,
 				6BA74A3E201C3E990079194B /* greasy-pan-2-normal.png */,
 				6BA74A40201C3E9C0079194B /* greasy-pan-2-roughness.png */,
-				6BA74A37201C3DB10079194B /* streakedmetal-albedo.png */,
-				6BA74A38201C3DB20079194B /* streakedmetal-metalness.png */,
-				6BA74A39201C3DB20079194B /* streakedmetal-roughness.png */,
 				6B161355201855EA00F51853 /* rustediron-streaks-albedo.png */,
 				6B161358201855EC00F51853 /* rustediron-streaks-metal.png */,
 				6B161356201855EB00F51853 /* rustediron-streaks-normal.png */,
@@ -194,24 +179,19 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6BA74A3C201C3DB20079194B /* streakedmetal-roughness.png in Resources */,
 				6B16135C201855EC00F51853 /* rustediron-streaks-metal.png in Resources */,
 				6B16134320184F4900F51853 /* art.scnassets in Resources */,
 				6BA74A41201C3E9C0079194B /* greasy-pan-2-metal.png in Resources */,
 				6B941539201ED5B800CBEBF3 /* spiderManTheme.mp3 in Resources */,
 				6B16134D20184F4A00F51853 /* LaunchScreen.storyboard in Resources */,
-				6BCAD9EA201CE47400D74914 /* confetti.png in Resources */,
 				6B161359201855EC00F51853 /* rustediron-streaks-albedo.png in Resources */,
 				6BA74A44201C3E9C0079194B /* greasy-pan-2-roughness.png in Resources */,
 				6BA74A42201C3E9C0079194B /* greasy-pan-2-normal.png in Resources */,
-				6BA74A3A201C3DB20079194B /* streakedmetal-albedo.png in Resources */,
 				6BA74A43201C3E9C0079194B /* greasy-pan-2-albedo.png in Resources */,
 				6BA74A48201C41040079194B /* overlay_grid.png in Resources */,
-				6BA74A3B201C3DB20079194B /* streakedmetal-metalness.png in Resources */,
-				6BCAD9E9201CE47400D74914 /* confettiParts.scnp in Resources */,
 				6B16134A20184F4A00F51853 /* Assets.xcassets in Resources */,
 				6B16134820184F4A00F51853 /* Main.storyboard in Resources */,
-				6BCAD9F1201CED3300D74914 /* colorParticles.scnp in Resources */,
+				6B394AFD202968C500EE9030 /* Circle@3x.png in Resources */,
 				6B941537201CF03D00CBEBF3 /* ambient.scnp in Resources */,
 				6B16135B201855EC00F51853 /* rustediron-streaks-roughness.png in Resources */,
 				6B16135A201855EC00F51853 /* rustediron-streaks-normal.png in Resources */,
