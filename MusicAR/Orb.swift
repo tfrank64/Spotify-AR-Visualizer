@@ -10,7 +10,8 @@ class Orb: SCNNode, AVAudioPlayerDelegate {
     var audioPlayer: AVAudioPlayer!
     var audioTimer: Timer?
     var isPlaying = false
-    var baseSoundPower: Float = -200
+    var baseSoundPower: Float = 0
+    var audioChanges: Float = 1
     
     init(anchor: ARPlaneAnchor) {
         
@@ -37,7 +38,7 @@ class Orb: SCNNode, AVAudioPlayerDelegate {
         
         sphereNode.position = SCNVector3(anchor.center.x, 0.2, anchor.center.z)
         
-        let sphereEmitter = createSphericalEmission(color: UIColor.red, geometry: sphere)
+        let sphereEmitter = createSphericalEmission(color: UIColor.blue, geometry: sphere)
         sphereNode.addParticleSystem(sphereEmitter)
         
         // add to the parent
@@ -48,6 +49,8 @@ class Orb: SCNNode, AVAudioPlayerDelegate {
         self.orbParticleSystem = SCNParticleSystem(named: "ambient.scnp", inDirectory: nil)!
         self.orbParticleSystem.particleColor = color
         self.orbParticleSystem.emitterShape = geometry
+        self.orbParticleSystem.birthRate = 0
+        self.orbParticleSystem.particleSize = 0.05
         return self.orbParticleSystem
     }
     
@@ -92,25 +95,30 @@ class Orb: SCNNode, AVAudioPlayerDelegate {
         guard self.audioPlayer.numberOfChannels > 0 else { return }
         let peakPower = self.audioPlayer.peakPower(forChannel: 0)
         print("Peak: \(peakPower)")
-        // TODO: get better baseline, average out first few peaks
-        if self.baseSoundPower < -160.0 {
-            self.baseSoundPower = peakPower
+
+        if self.audioChanges <= 5 {
+            self.baseSoundPower = self.baseSoundPower + peakPower
+            if self.audioChanges == 5 {
+                self.baseSoundPower = self.baseSoundPower / self.audioChanges
+            }
+//            print("BasePow: \(self.baseSoundPower) with changes: \(self.audioChanges)")
+            self.audioChanges += 1
+            return
         }
         let valueInRange = (peakPower - self.baseSoundPower)/(0 - self.baseSoundPower)
-        let birthRate = valueInRange * 100 //(x - start)/(end - start)
+        let birthRate = valueInRange * 300 //(x - start)/(end - start)
         print("birthrate: \(birthRate)")
         self.orbParticleSystem.birthRate = CGFloat(birthRate)
         print("valueInrange: \(valueInRange)")
         let particleVelocity = valueInRange * 3
         print("velocity: \(particleVelocity)")
         self.orbParticleSystem.particleVelocity = CGFloat(particleVelocity)
-        let particleSize = valueInRange * 0.1
+        let particleSize = valueInRange * 0.5
         print("size: \(particleSize)")
         self.orbParticleSystem.particleSize = CGFloat(particleSize)
     }
     
     func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
-        print("audio finished")
         guard self.audioTimer != nil else { return }
         self.audioTimer?.invalidate()
         self.audioTimer = nil
