@@ -17,6 +17,10 @@
 		6B16135A201855EC00F51853 /* rustediron-streaks-normal.png in Resources */ = {isa = PBXBuildFile; fileRef = 6B161356201855EB00F51853 /* rustediron-streaks-normal.png */; };
 		6B16135B201855EC00F51853 /* rustediron-streaks-roughness.png in Resources */ = {isa = PBXBuildFile; fileRef = 6B161357201855EB00F51853 /* rustediron-streaks-roughness.png */; };
 		6B16135C201855EC00F51853 /* rustediron-streaks-metal.png in Resources */ = {isa = PBXBuildFile; fileRef = 6B161358201855EC00F51853 /* rustediron-streaks-metal.png */; };
+		6B2E5EDD2031568C001C26DC /* MusicPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B2E5EDC2031568C001C26DC /* MusicPickerViewController.swift */; };
+		6B2E5EE620315A32001C26DC /* SpotifyAudioPlayback.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6B2E5EE520315A32001C26DC /* SpotifyAudioPlayback.framework */; };
+		6B2E5EE920315A3F001C26DC /* SpotifyMetadata.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6B2E5EE720315A3E001C26DC /* SpotifyMetadata.framework */; };
+		6B2E5EEA20315A3F001C26DC /* SpotifyAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6B2E5EE820315A3F001C26DC /* SpotifyAuthentication.framework */; };
 		6B394AFD202968C500EE9030 /* Circle@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6B394AFC202968C400EE9030 /* Circle@3x.png */; };
 		6B941537201CF03D00CBEBF3 /* ambient.scnp in Resources */ = {isa = PBXBuildFile; fileRef = 6B941536201CF03D00CBEBF3 /* ambient.scnp */; };
 		6B941539201ED5B800CBEBF3 /* spiderManTheme.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 6B941538201ED5B800CBEBF3 /* spiderManTheme.mp3 */; };
@@ -43,6 +47,11 @@
 		6B161356201855EB00F51853 /* rustediron-streaks-normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rustediron-streaks-normal.png"; sourceTree = "<group>"; };
 		6B161357201855EB00F51853 /* rustediron-streaks-roughness.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rustediron-streaks-roughness.png"; sourceTree = "<group>"; };
 		6B161358201855EC00F51853 /* rustediron-streaks-metal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rustediron-streaks-metal.png"; sourceTree = "<group>"; };
+		6B2E5EDC2031568C001C26DC /* MusicPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicPickerViewController.swift; sourceTree = "<group>"; };
+		6B2E5EE520315A32001C26DC /* SpotifyAudioPlayback.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SpotifyAudioPlayback.framework; sourceTree = "<group>"; };
+		6B2E5EE720315A3E001C26DC /* SpotifyMetadata.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SpotifyMetadata.framework; sourceTree = "<group>"; };
+		6B2E5EE820315A3F001C26DC /* SpotifyAuthentication.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SpotifyAuthentication.framework; sourceTree = "<group>"; };
+		6B2E5EEB20315D3E001C26DC /* MusicAR-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MusicAR-Bridging-Header.h"; sourceTree = "<group>"; };
 		6B394AFC202968C400EE9030 /* Circle@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Circle@3x.png"; sourceTree = "<group>"; };
 		6B941536201CF03D00CBEBF3 /* ambient.scnp */ = {isa = PBXFileReference; lastKnownFileType = file.scp; path = ambient.scnp; sourceTree = "<group>"; };
 		6B941538201ED5B800CBEBF3 /* spiderManTheme.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = spiderManTheme.mp3; sourceTree = "<group>"; };
@@ -61,6 +70,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6B2E5EE920315A3F001C26DC /* SpotifyMetadata.framework in Frameworks */,
+				6B2E5EEA20315A3F001C26DC /* SpotifyAuthentication.framework in Frameworks */,
+				6B2E5EE620315A32001C26DC /* SpotifyAudioPlayback.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -72,6 +84,7 @@
 			children = (
 				6B16133F20184F4900F51853 /* MusicAR */,
 				6B16133E20184F4900F51853 /* Products */,
+				6B2E5EDE203159FC001C26DC /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -101,6 +114,8 @@
 				6BA74A45201C41040079194B /* OverlayPlane.swift */,
 				6B941538201ED5B800CBEBF3 /* spiderManTheme.mp3 */,
 				6B161354201855CF00F51853 /* Textures */,
+				6B2E5EDC2031568C001C26DC /* MusicPickerViewController.swift */,
+				6B2E5EEB20315D3E001C26DC /* MusicAR-Bridging-Header.h */,
 			);
 			path = MusicAR;
 			sourceTree = "<group>";
@@ -118,6 +133,16 @@
 				6B161357201855EB00F51853 /* rustediron-streaks-roughness.png */,
 			);
 			path = Textures;
+			sourceTree = "<group>";
+		};
+		6B2E5EDE203159FC001C26DC /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				6B2E5EE820315A3F001C26DC /* SpotifyAuthentication.framework */,
+				6B2E5EE720315A3E001C26DC /* SpotifyMetadata.framework */,
+				6B2E5EE520315A32001C26DC /* SpotifyAudioPlayback.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -152,6 +177,7 @@
 				TargetAttributes = {
 					6B16133C20184F4900F51853 = {
 						CreatedOnToolsVersion = 9.2;
+						LastSwiftMigration = 0920;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -207,6 +233,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6B16134520184F4A00F51853 /* OrbViewController.swift in Sources */,
+				6B2E5EDD2031568C001C26DC /* MusicPickerViewController.swift in Sources */,
 				6BA74A47201C41040079194B /* OverlayPlane.swift in Sources */,
 				6BA74A4A201C4D880079194B /* Orb.swift in Sources */,
 				6B16134120184F4900F51853 /* AppDelegate.swift in Sources */,
@@ -346,12 +373,20 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = E7MP3ZCP88;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = MusicAR/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.taylorfranklin.MusicAR;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "MusicAR/MusicAR-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -361,12 +396,19 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = E7MP3ZCP88;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = MusicAR/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.taylorfranklin.MusicAR;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "MusicAR/MusicAR-Bridging-Header.h";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

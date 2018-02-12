@@ -1,9 +1,10 @@
 import UIKit
 import SceneKit
 import ARKit
-// clean up, fix force unwrapping
+
 // Have user pick color or "party mode". they pick song and go.
 // tap orb to play/pause, swipe to skip
+// Have sound increase/decrease based on orb proximity
 class OrbViewController: UIViewController, ARSCNViewDelegate {
     
     var sceneView: ARSCNView!
