@@ -8,7 +8,6 @@ class OrbViewController: UIViewController, ARSCNViewDelegate {
     
     var sceneView: ARSCNView!
     var orb: Orb?
-//    var planes = [OverlayPlane]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,7 +28,6 @@ class OrbViewController: UIViewController, ARSCNViewDelegate {
     }
     
     private func insertLighting(position: SCNVector3) {
-        
         let directionalLight = SCNLight()
         directionalLight.type = .directional
         
@@ -45,44 +43,21 @@ class OrbViewController: UIViewController, ARSCNViewDelegate {
     // MARK: ARSCNViewDelegate methods
     
     func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
-        let estimate: ARLightEstimate? = sceneView.session.currentFrame?.lightEstimate
-        if estimate == nil {
+        guard let estimate = sceneView.session.currentFrame?.lightEstimate,
+              let directionalNode = self.sceneView.scene.rootNode.childNode(withName: "DirectionalNode", recursively: true) else {
             return
         }
-        let directionalNode = self.sceneView.scene.rootNode.childNode(withName: "DirectionalNode", recursively: true)
-        directionalNode?.light?.intensity = (estimate?.ambientIntensity)!
+        directionalNode.light?.intensity = estimate.ambientIntensity
     }
     
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
-        
-        if !(anchor is ARPlaneAnchor) {
-            return
-        }
-        
         if let arAnchor = anchor as? ARPlaneAnchor {
             if self.orb == nil {
                 self.orb = Orb(anchor: arAnchor)
                 node.addChildNode(self.orb!)
                 self.orb!.beginPlayingMusic()
             }
-            
-//            let plane = OverlayPlane(anchor: arAnchor)
-//            self.planes.append(plane)
-//            node.addChildNode(plane)
         }
-    }
-    
-    func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
-        
-//        let plane = self.planes.filter { plane in
-//            return plane.anchor.identifier == anchor.identifier
-//        }.first
-//
-//        if plane == nil {
-//            return
-//        }
-//
-//        plane?.update(anchor: anchor as! ARPlaneAnchor)
     }
     
     override func viewWillAppear(_ animated: Bool) {

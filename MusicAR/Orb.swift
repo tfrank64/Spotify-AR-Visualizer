@@ -46,7 +46,10 @@ class Orb: SCNNode, AVAudioPlayerDelegate {
     }
     
     func createSphericalEmission(color: UIColor, geometry: SCNGeometry) -> SCNParticleSystem {
-        self.orbParticleSystem = SCNParticleSystem(named: "ambient.scnp", inDirectory: nil)!
+        guard let particleSystem = SCNParticleSystem(named: "ambient.scnp", inDirectory: nil) else {
+            fatalError("Couldn't init particle system, app depends on this")
+        }
+        self.orbParticleSystem = particleSystem
         self.orbParticleSystem.particleColor = color
         self.orbParticleSystem.emitterShape = geometry
         self.orbParticleSystem.birthRate = 0
@@ -87,7 +90,6 @@ class Orb: SCNNode, AVAudioPlayerDelegate {
             self.audioPlayer.play()
         }
         self.isPlaying = !self.isPlaying
-        print("isplaying?? \(self.isPlaying)")
     }
     
     @objc func monitorAudioPlayer() {
