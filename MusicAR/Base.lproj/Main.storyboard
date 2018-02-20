@@ -17,13 +17,46 @@
                     <view key="view" contentMode="scaleToFill" id="4uT-tk-d8l">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fLE-Ki-8Tm">
+                                <rect key="frame" x="0.0" y="20" width="375" height="44"/>
+                                <items>
+                                    <navigationItem title="Select Music" id="UWv-sq-nnT"/>
+                                </items>
+                            </navigationBar>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7iM-d9-YJ5">
+                                <rect key="frame" x="93" y="136" width="188" height="50"/>
+                                <color key="backgroundColor" red="0.11372549019607843" green="0.72549019607843135" blue="0.32941176470588235" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="aTa-O5-0BM"/>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="188" id="m0p-BS-JWv"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                <state key="normal" title="Login With Spotify">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="login:" destination="v8s-Fk-BGm" eventType="touchUpInside" id="Uh0-pF-CaK"/>
+                                </connections>
+                            </button>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="fLE-Ki-8Tm" firstAttribute="leading" secondItem="2Ma-fn-6pt" secondAttribute="leading" id="NsF-oW-qfc"/>
+                            <constraint firstItem="7iM-d9-YJ5" firstAttribute="top" secondItem="fLE-Ki-8Tm" secondAttribute="bottom" constant="72" id="d34-fM-gX3"/>
+                            <constraint firstItem="fLE-Ki-8Tm" firstAttribute="top" secondItem="2Ma-fn-6pt" secondAttribute="top" id="i4U-fS-mkb"/>
+                            <constraint firstItem="fLE-Ki-8Tm" firstAttribute="trailing" secondItem="2Ma-fn-6pt" secondAttribute="trailing" id="uok-D1-3eC"/>
+                            <constraint firstItem="7iM-d9-YJ5" firstAttribute="centerX" secondItem="2Ma-fn-6pt" secondAttribute="centerX" id="w2c-pb-rXc"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="2Ma-fn-6pt"/>
                     </view>
+                    <connections>
+                        <outlet property="loginButton" destination="7iM-d9-YJ5" id="hy0-BO-QIH"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Q69-Ch-4Ab" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-734" y="107"/>
+            <point key="canvasLocation" x="-735.20000000000005" y="106.59670164917542"/>
         </scene>
         <!--Orb View Controller-->
         <scene sceneID="tXr-a1-R10">
