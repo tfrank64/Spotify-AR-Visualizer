@@ -18,13 +18,11 @@ class MusicPickerViewController: UIViewController {
     var player: SPTAudioStreamingController?
     var loginUrl: URL?
     var authViewController: UIViewController!
-//    var latestPlaylistList: SPTPlaylistList?
     var masterPlaylistList = [SPTPartialPlaylist]()
-    var nextPlaylistPageUrl: URL?
+    var nextPlaylistPageRequest: URLRequest?
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        playlistTableView.estimatedRowHeight = 120
         sdkSetup()
         NotificationCenter.default.addObserver(self, selector: #selector(updateAfterFirstLogin), name: Notification.Name(rawValue: "loginSuccessfull"), object: nil)
     }
@@ -98,29 +96,52 @@ class MusicPickerViewController: UIViewController {
             }
             print("hasNextPage? \(playlists.hasNextPage) and nextPage: \(playlists.nextPageURL)")
             self.masterPlaylistList = partialPlaylists
-            self.nextPlaylistPageUrl = playlists.hasNextPage ? playlists.nextPageURL : nil
-            for playlist in partialPlaylists {
-                print("playlist name: \(playlist.name)")
-                print("and uri: \(playlist.uri)")
+            if playlists.hasNextPage {
+                do {
+                    self.nextPlaylistPageRequest = try playlists.createRequestForNextPage(withAccessToken: self.session.accessToken)
+                } catch {
+                    print("Failed to get next playlist page request: \(error.localizedDescription)")
+                }
             }
-            // TODO: get main queue and reload table view
+
+            DispatchQueue.main.async {
+                self.playlistTableView.reloadData()
+            }
         }
     }
     
     func addNextPlaylistPage() {
-        if let nextPageUrl = self.nextPlaylistPageUrl {
-            let urlRequest = URLRequest(url: nextPageUrl)
-            SPTRequest.sharedHandler().perform(urlRequest, callback: { (error, response, data) in
+        if let nextPageUrlRequest = self.nextPlaylistPageRequest {
+            SPTRequest.sharedHandler().perform(nextPageUrlRequest, callback: { (error, response, data) in
                 guard error == nil, let resp = response, let playlistData = data else {
                     print("Error getting next playlist: \(String(describing: error?.localizedDescription))")
                     return
                 }
-                print("theresponse: \(resp)")
-                let stringdata = String(data: playlistData, encoding: .utf8)
-                print("stringdata: \(String(describing: stringdata))")
+                do {
+                    let playlists = try SPTPlaylistList(from: playlistData, with: resp)
+                    if let partialPlaylists = playlists.items as? [SPTPartialPlaylist] {
+                        print("hasNextPage? \(playlists.hasNextPage) and nextPage: \(playlists.nextPageURL)")
+                        self.masterPlaylistList += partialPlaylists
+                        if playlists.hasNextPage {
+                            do {
+                                self.nextPlaylistPageRequest = try playlists.createRequestForNextPage(withAccessToken: self.session.accessToken)
+                            } catch {
+                                print("Failed to get next playlist page request: \(error.localizedDescription)")
+                            }
+                        } else {
+                            self.nextPlaylistPageRequest = nil
+                        }
+
+                        DispatchQueue.main.async {
+                            self.playlistTableView.reloadData()
+                        }
+                    }
+                } catch {
+                    print(error.localizedDescription)
+                }
             })
         } else {
-            print("Error: Next page URL is nil, there are no more playlists to load.")
+            print("Error: Next page URLRequest is nil, there are no more playlists to load.")
         }
     }
     
@@ -142,7 +163,6 @@ extension MusicPickerViewController: SPTAudioStreamingDelegate, SPTAudioStreamin
 //            print("playing!")
 //        })
     }
-    
 }
 
 extension MusicPickerViewController: UITableViewDelegate, UITableViewDataSource {
@@ -163,13 +183,57 @@ extension MusicPickerViewController: UITableViewDelegate, UITableViewDataSource 
         return 80
     }
     
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if indexPath.item + 1 == self.masterPlaylistList.count {
+            self.addNextPlaylistPage()
+        }
+    }
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "playlistCell", for: indexPath)
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "playlistCell", for: indexPath) as? UserPlaylistTableViewCell else {
+            print("Failed to create PlaylistTableViewCell")
+            return UITableViewCell()
+        }
         let playlistItem = self.masterPlaylistList[indexPath.item]
-        cell.textLabel?.text = playlistItem.name
-        cell.imageView?.contentMode = UIViewContentMode.scaleAspectFill
-        cell.imageView?.image = UIImage(named: "doge")
+        cell.playlistTitle.text = playlistItem.name
+        cell.playlistTracksLabel.text = playlistItem.trackCount == 1 ? "1 song" : "\(playlistItem.trackCount) songs"
+        if playlistItem.smallestImage != nil {
+            cell.playlistImageView.imageFromServerURL(url: playlistItem.smallestImage.imageURL, defaultImage: "default")
+        } else {
+            cell.playlistImageView.image = UIImage(named: "default")
+        }
         return cell
     }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
+    
+}
+
+// TODO: move to separate file
+class UserPlaylistTableViewCell: UITableViewCell {
+    @IBOutlet weak var playlistImageView: UIImageView!
+    @IBOutlet weak var playlistTitle: UILabel!
+    @IBOutlet weak var playlistTracksLabel: UILabel!
+}
+
+extension UIImageView {
+    public func imageFromServerURL(url: URL, defaultImage: String?) {
+        if let defaultImg = defaultImage {
+            self.image = UIImage(named: defaultImg)
+        }
+        
+        URLSession.shared.dataTask(with: url, completionHandler: { (data, response, error) -> Void in
+            guard error == nil, let imageData = data else {
+                print("Error getting image data: \(String(describing: error?.localizedDescription))")
+                return
+            }
+            DispatchQueue.main.async {
+                let image = UIImage(data: imageData)
+                self.image = image
+            }
+            
+        }).resume()
+    }
 }

@@ -6,6 +6,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -37,13 +38,49 @@
                                 <rect key="frame" x="0.0" y="20" width="375" height="647"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="playlistCell" rowHeight="100" id="yAU-jH-Va2">
-                                        <rect key="frame" x="0.0" y="28" width="375" height="100"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="playlistCell" rowHeight="70" id="5qD-hS-sCQ" customClass="UserPlaylistTableViewCell" customModule="MusicAR" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="28" width="375" height="70"/>
                                         <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="yAU-jH-Va2" id="Vku-CH-IOM">
-                                            <rect key="frame" x="0.0" y="0.0" width="342" height="99.5"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="5qD-hS-sCQ" id="G3Q-bb-Lqc">
+                                            <rect key="frame" x="0.0" y="0.0" width="342" height="69.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="YFp-to-PkC">
+                                                    <rect key="frame" x="0.0" y="4" width="60" height="60"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" secondItem="YFp-to-PkC" secondAttribute="height" multiplier="1:1" id="g6k-8y-R6r"/>
+                                                    </constraints>
+                                                </imageView>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ts3-pU-nq2">
+                                                    <rect key="frame" x="68" y="16.5" width="34" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Subtitle" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QXD-Ox-ogT">
+                                                    <rect key="frame" x="68" y="39.5" width="44" height="14.5"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="QXD-Ox-ogT" firstAttribute="leading" secondItem="YFp-to-PkC" secondAttribute="trailing" constant="8" id="ABD-Rd-7UK"/>
+                                                <constraint firstItem="YFp-to-PkC" firstAttribute="leading" secondItem="G3Q-bb-Lqc" secondAttribute="leading" id="FrD-y9-Psp"/>
+                                                <constraint firstItem="ts3-pU-nq2" firstAttribute="leading" secondItem="YFp-to-PkC" secondAttribute="trailing" constant="8" id="Gzh-st-maV"/>
+                                                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="ts3-pU-nq2" secondAttribute="trailing" constant="20" symbolic="YES" id="T7N-2K-lU0"/>
+                                                <constraint firstAttribute="bottom" secondItem="YFp-to-PkC" secondAttribute="bottom" constant="5.5" id="c3S-QF-drF"/>
+                                                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="QXD-Ox-ogT" secondAttribute="trailing" constant="20" symbolic="YES" id="kid-jn-T7Q"/>
+                                                <constraint firstItem="ts3-pU-nq2" firstAttribute="centerY" secondItem="G3Q-bb-Lqc" secondAttribute="centerY" constant="-8" id="oa7-5N-mgE"/>
+                                                <constraint firstItem="QXD-Ox-ogT" firstAttribute="centerY" secondItem="G3Q-bb-Lqc" secondAttribute="centerY" constant="12" id="w72-Wh-8YV"/>
+                                                <constraint firstItem="YFp-to-PkC" firstAttribute="top" secondItem="G3Q-bb-Lqc" secondAttribute="top" constant="4" id="xv7-bO-SBm"/>
+                                            </constraints>
                                         </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="playlistImageView" destination="YFp-to-PkC" id="JV3-sO-hWL"/>
+                                            <outlet property="playlistTitle" destination="ts3-pU-nq2" id="rPw-kj-rNv"/>
+                                            <outlet property="playlistTracksLabel" destination="QXD-Ox-ogT" id="mgx-QV-Wgd"/>
+                                        </connections>
                                     </tableViewCell>
                                 </prototypes>
                                 <connections>
