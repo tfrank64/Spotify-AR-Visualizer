@@ -18,12 +18,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fLE-Ki-8Tm">
-                                <rect key="frame" x="0.0" y="20" width="375" height="44"/>
-                                <items>
-                                    <navigationItem title="Select Music" id="UWv-sq-nnT"/>
-                                </items>
-                            </navigationBar>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7iM-d9-YJ5">
                                 <rect key="frame" x="93" y="136" width="188" height="50"/>
                                 <color key="backgroundColor" red="0.11372549019607843" green="0.72549019607843135" blue="0.32941176470588235" alpha="1" colorSpace="calibratedRGB"/>
@@ -39,19 +33,39 @@
                                     <action selector="login:" destination="v8s-Fk-BGm" eventType="touchUpInside" id="Uh0-pF-CaK"/>
                                 </connections>
                             </button>
+                            <tableView hidden="YES" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="KcA-kI-ZAX">
+                                <rect key="frame" x="0.0" y="20" width="375" height="647"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="playlistCell" rowHeight="100" id="yAU-jH-Va2">
+                                        <rect key="frame" x="0.0" y="28" width="375" height="100"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="yAU-jH-Va2" id="Vku-CH-IOM">
+                                            <rect key="frame" x="0.0" y="0.0" width="342" height="99.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </prototypes>
+                                <connections>
+                                    <outlet property="dataSource" destination="v8s-Fk-BGm" id="t9A-Ss-b47"/>
+                                    <outlet property="delegate" destination="v8s-Fk-BGm" id="QOr-Qt-emR"/>
+                                </connections>
+                            </tableView>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" red="0.96912556886672974" green="0.96985918283462524" blue="0.96923929452896118" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="fLE-Ki-8Tm" firstAttribute="leading" secondItem="2Ma-fn-6pt" secondAttribute="leading" id="NsF-oW-qfc"/>
-                            <constraint firstItem="7iM-d9-YJ5" firstAttribute="top" secondItem="fLE-Ki-8Tm" secondAttribute="bottom" constant="72" id="d34-fM-gX3"/>
-                            <constraint firstItem="fLE-Ki-8Tm" firstAttribute="top" secondItem="2Ma-fn-6pt" secondAttribute="top" id="i4U-fS-mkb"/>
-                            <constraint firstItem="fLE-Ki-8Tm" firstAttribute="trailing" secondItem="2Ma-fn-6pt" secondAttribute="trailing" id="uok-D1-3eC"/>
+                            <constraint firstItem="KcA-kI-ZAX" firstAttribute="bottom" secondItem="2Ma-fn-6pt" secondAttribute="bottom" id="Ntx-cA-ZmZ"/>
+                            <constraint firstItem="7iM-d9-YJ5" firstAttribute="top" secondItem="2Ma-fn-6pt" secondAttribute="top" constant="116" id="Xz1-jH-eP7"/>
+                            <constraint firstItem="KcA-kI-ZAX" firstAttribute="leading" secondItem="2Ma-fn-6pt" secondAttribute="leading" id="frH-uN-Q6H"/>
+                            <constraint firstItem="KcA-kI-ZAX" firstAttribute="top" secondItem="2Ma-fn-6pt" secondAttribute="top" id="hza-oJ-2LD"/>
+                            <constraint firstItem="KcA-kI-ZAX" firstAttribute="trailing" secondItem="2Ma-fn-6pt" secondAttribute="trailing" id="odM-HK-4XT"/>
                             <constraint firstItem="7iM-d9-YJ5" firstAttribute="centerX" secondItem="2Ma-fn-6pt" secondAttribute="centerX" id="w2c-pb-rXc"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="2Ma-fn-6pt"/>
                     </view>
                     <connections>
                         <outlet property="loginButton" destination="7iM-d9-YJ5" id="hy0-BO-QIH"/>
+                        <outlet property="playlistTableView" destination="KcA-kI-ZAX" id="F9A-4c-UtQ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Q69-Ch-4Ab" userLabel="First Responder" sceneMemberID="firstResponder"/>
