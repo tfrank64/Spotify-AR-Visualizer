@@ -8,6 +8,7 @@
 
 import UIKit
 import SafariServices
+import AVFoundation
 
 class MusicPickerViewController: UIViewController {
     
@@ -17,9 +18,12 @@ class MusicPickerViewController: UIViewController {
     var session: SPTSession!
     var player: SPTAudioStreamingController?
     var loginUrl: URL?
+    var isAuthenticated = false
     var authViewController: UIViewController!
     var masterPlaylistList = [SPTPartialPlaylist]()
     var nextPlaylistPageRequest: URLRequest?
+    
+    let av = AVAudioPlayer()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -131,7 +135,6 @@ class MusicPickerViewController: UIViewController {
                         } else {
                             self.nextPlaylistPageRequest = nil
                         }
-
                         DispatchQueue.main.async {
                             self.playlistTableView.reloadData()
                         }
@@ -141,27 +144,8 @@ class MusicPickerViewController: UIViewController {
                 }
             })
         } else {
-            print("Error: Next page URLRequest is nil, there are no more playlists to load.")
+            print("Warning: Next page URLRequest is nil, there are no more playlists to load.")
         }
-    }
-    
-    // create method to detect when scrolled to bottom
-    // if so, do call to get next playlist and add to data object (not created yet)
-    // continually getlatest playlist and call nextPlaylist...
-    // if no more pages, ignore call.
-}
-
-extension MusicPickerViewController: SPTAudioStreamingDelegate, SPTAudioStreamingPlaybackDelegate {
-    
-    func audioStreamingDidLogin(_ audioStreaming: SPTAudioStreamingController!) {
-        print("logged in")
-        setupPlaylists()
-//        self.player?.playSpotifyURI("spotify:track:2pJZ1v8HezrAoZ0Fhzby92", startingWith: 0, startingWithPosition: 0, callback: { (error) in
-//            if (error != nil) {
-//                print("Error playing song: \(String(describing: error?.localizedDescription))")
-//            }
-//            print("playing!")
-//        })
     }
 }
 
@@ -202,13 +186,67 @@ extension MusicPickerViewController: UITableViewDelegate, UITableViewDataSource 
         } else {
             cell.playlistImageView.image = UIImage(named: "default")
         }
+        print("playable uri: \(playlistItem.playableUri)")
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        let playlistItem = self.masterPlaylistList[indexPath.item]
+        self.streamPlaylist(playlistUri: playlistItem.playableUri)
+//        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+//        if let orbVC = storyboard.instantiateViewController(withIdentifier: "OrbViewController") as? OrbViewController {
+//            orbVC.spotifyPlaylistUri = playlistItem.playableUri.absoluteString
+//            self.present(orbVC, animated: true, completion: nil)
+//        }
+        
+    }
+}
+
+extension MusicPickerViewController: SPTAudioStreamingDelegate, SPTAudioStreamingPlaybackDelegate {
+    
+    func audioStreamingDidLogin(_ audioStreaming: SPTAudioStreamingController!) {
+        print("logged in")
+        self.isAuthenticated = true
+        self.setupPlaylists()
     }
     
+    func audioStreaming(_ audioStreaming: SPTAudioStreamingController!, didReceive event: SpPlaybackEvent) {
+        print("EVENT: \(event.rawValue)")
+        if event == SPPlaybackNotifyPlay {
+            audioStreaming.setShuffle(true, callback: { error in
+                guard error == nil else {
+                    print("Error setting shuffle state: \(String(describing: error?.localizedDescription))")
+                    return
+                }
+            })
+        }
+    }
+    
+    func streamPlaylist(playlistUri: URL) {
+        if let player = self.player, self.isAuthenticated {
+  
+            player.playSpotifyURI(playlistUri.absoluteString, startingWith: 0, startingWithPosition: 0, callback: { error in
+                if (error != nil) {
+                    print("Error playing song: \(String(describing: error?.localizedDescription))")
+                }
+
+            })
+//            var mytime = Timer.scheduledTimer(timeInterval: 0.2,
+//                                                   target: self,
+//                                                   selector: #selector(self.monitorAudioPlayer),
+//                                                   userInfo: nil,
+//                                                   repeats: true)
+        }
+    }
+    
+    @objc func monitorAudioPlayer() {
+        print("monitoring...")
+        av.updateMeters()
+        print("channels: \(av.numberOfChannels)")
+        let peakPower = av.peakPower(forChannel: 0)
+        print("peak: \(peakPower)")
+    }
 }
 
 // TODO: move to separate file

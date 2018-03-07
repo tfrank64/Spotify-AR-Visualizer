@@ -112,9 +112,10 @@
         <!--Orb View Controller-->
         <scene sceneID="tXr-a1-R10">
             <objects>
-                <viewController id="BV1-FR-VrT" customClass="OrbViewController" customModule="MusicAR" customModuleProvider="target" sceneMemberID="viewController"/>
+                <viewController storyboardIdentifier="OrbViewController" id="BV1-FR-VrT" customClass="OrbViewController" customModule="MusicAR" customModuleProvider="target" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SZV-WD-TEh" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="145" y="107"/>
         </scene>
     </scenes>
 </document>

@@ -9,6 +9,7 @@ class OrbViewController: UIViewController, ARSCNViewDelegate {
     
     var sceneView: ARSCNView!
     var orb: Orb?
+    var spotifyPlaylistUri: String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -53,8 +54,8 @@ class OrbViewController: UIViewController, ARSCNViewDelegate {
     
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
         if let arAnchor = anchor as? ARPlaneAnchor {
-            if self.orb == nil {
-                self.orb = Orb(anchor: arAnchor)
+            if self.orb == nil, let playableUri = self.spotifyPlaylistUri {
+                self.orb = Orb(anchor: arAnchor, playableUri: playableUri)
                 node.addChildNode(self.orb!)
                 self.orb!.beginPlayingMusic()
             }
