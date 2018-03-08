@@ -9,6 +9,7 @@
 import UIKit
 import SafariServices
 import AVFoundation
+import Accelerate
 
 class MusicPickerViewController: UIViewController {
     
@@ -22,9 +23,8 @@ class MusicPickerViewController: UIViewController {
     var authViewController: UIViewController!
     var masterPlaylistList = [SPTPartialPlaylist]()
     var nextPlaylistPageRequest: URLRequest?
+    let audioEngine = AVAudioEngine()
     
-    let av = AVAudioPlayer()
-
     override func viewDidLoad() {
         super.viewDidLoad()
         sdkSetup()
@@ -237,15 +237,74 @@ extension MusicPickerViewController: SPTAudioStreamingDelegate, SPTAudioStreamin
 //                                                   selector: #selector(self.monitorAudioPlayer),
 //                                                   userInfo: nil,
 //                                                   repeats: true)
+            self.audioConnection()
+        }
+    }
+    
+    func audioConnection() {
+//        let mixer = AVAudioMixerNode()
+        
+//        print("input: \(audioEngine.inputNode)")
+        
+//        audioEngine.attach(mixer)
+//        audioEngine.connect(audioEngine.inputNode, to: mixer, format: nil)
+        
+//        let mixer = audioEngine.mainMixerNode
+//        let bufferSize: AVAudioFrameCount = 4096
+//        let format = mixer.outputFormat(forBus: 0)
+//        print("format: \(format)")
+//
+//        mixer.installTap(onBus: 0, bufferSize: bufferSize, format: format) { (buffer, time) in
+//            print("in tap with time: \(time)")
+//        }
+        var channel0Power: Float = 0
+        let inputNode = audioEngine.inputNode
+        let bus = 0
+        inputNode.installTap(onBus: bus, bufferSize: 2048, format: inputNode.inputFormat(forBus: bus)) {
+            (buffer: AVAudioPCMBuffer!, time: AVAudioTime!) -> Void in
+//            print("time: \(AVAudioTime.seconds(forHostTime: time.hostTime))")
+
+            
+//            guard let data = buffer.floatChannelData?[0] else {
+//                return
+//            }
+//            var dbData = [Float](repeating: 0.0, count: 5)
+//            var one: Float = 0.0
+//            vDSP_vdbcon(data, 1, &one, &dbData, 1, vDSP_Length(Int(buffer.frameLength)), 1)
+//
+//
+//            var avgLevel: Float = 0.0
+//            var peakLevel: Float = 0.0
+//            vDSP_rmsqv(dbData, 1, &avgLevel, vDSP_Length(buffer.frameLength))
+//            vDSP_maxmgv(dbData, 1, &peakLevel, vDSP_Length(buffer.frameLength))
+            buffer.frameLength = 2048
+            let inNumberFrames = buffer.frameLength
+            if (buffer.format.channelCount > 0) {
+                let samples = buffer.floatChannelData![0]
+                var avgValue: Float = 0
+                
+                vDSP_meamgv(samples, 1, &avgValue, vDSP_Length(inNumberFrames))
+                let tempVal = ((avgValue == 0) ? -100 : 20.0 * log10f(avgValue))
+                let partTwo = ((1.0 - 0.20) * channel0Power)
+                channel0Power = (0.20 * tempVal) + partTwo
+                print("channel Power: \(channel0Power)")
+            }
+        }
+        
+        audioEngine.prepare()
+        do {
+            try audioEngine.start()
+        } catch {
+            print(error)
         }
     }
     
     @objc func monitorAudioPlayer() {
         print("monitoring...")
-        av.updateMeters()
-        print("channels: \(av.numberOfChannels)")
-        let peakPower = av.peakPower(forChannel: 0)
-        print("peak: \(peakPower)")
+//        av.updateMeters()
+//        print("channels: \(av.numberOfChannels)")
+//        let peakPower = av.peakPower(forChannel: 0)
+//        print("peak: \(peakPower)")
     }
 }
 
@@ -274,4 +333,8 @@ extension UIImageView {
             
         }).resume()
     }
+}
+
+extension SPTCoreAudioController {
+    
 }
