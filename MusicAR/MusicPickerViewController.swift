@@ -17,13 +17,16 @@ class MusicPickerViewController: UIViewController {
     @IBOutlet weak var loginButton: UIButton!
     var auth = SPTAuth.defaultInstance()!
     var session: SPTSession!
-    var player: SPTAudioStreamingController?
+//    var player: SPTAudioStreamingController?
     var loginUrl: URL?
     var isAuthenticated = false
     var authViewController: UIViewController!
     var masterPlaylistList = [SPTPartialPlaylist]()
     var nextPlaylistPageRequest: URLRequest?
     let audioEngine = AVAudioEngine()
+    
+    var channel0Power: Float = 0
+    var channel1Power: Float = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,9 +45,8 @@ class MusicPickerViewController: UIViewController {
         loginUrl = auth.spotifyWebAuthenticationURL()
         
         if let currentSession = getStoredSession() {
-            print("session Valid: \(currentSession.expirationDate)")
             self.session = currentSession
-            initializePlayer(authSession: self.session)
+//            initializePlayer(authSession: self.session)
             setupPlaylists()
         }
     }
@@ -63,7 +65,7 @@ class MusicPickerViewController: UIViewController {
         if let firstTimeSession = getStoredSession() {
             self.authViewController.dismiss(animated: true, completion: nil)
             self.session = firstTimeSession
-            initializePlayer(authSession: self.session)
+//            initializePlayer(authSession: self.session)
         }
     }
 
@@ -74,15 +76,15 @@ class MusicPickerViewController: UIViewController {
         }
     }
     
-    func initializePlayer(authSession: SPTSession) {
-        if self.player == nil {
-            self.player = SPTAudioStreamingController.sharedInstance()
-            self.player!.playbackDelegate = self
-            self.player!.delegate = self
-            try! player!.start(withClientId: auth.clientID)
-            self.player!.login(withAccessToken: authSession.accessToken)
-        }
-    }
+//    func initializePlayer(authSession: SPTSession) {
+//        if self.player == nil {
+//            self.player = SPTAudioStreamingController.sharedInstance()
+//            self.player!.playbackDelegate = self
+//            self.player!.delegate = self
+//            try! player!.start(withClientId: auth.clientID)
+//            self.player!.login(withAccessToken: authSession.accessToken)
+//        }
+//    }
     
     func setupPlaylists() {
         // if already setup, don't do again
@@ -193,17 +195,17 @@ extension MusicPickerViewController: UITableViewDelegate, UITableViewDataSource 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let playlistItem = self.masterPlaylistList[indexPath.item]
-        self.streamPlaylist(playlistUri: playlistItem.playableUri)
-//        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-//        if let orbVC = storyboard.instantiateViewController(withIdentifier: "OrbViewController") as? OrbViewController {
-//            orbVC.spotifyPlaylistUri = playlistItem.playableUri.absoluteString
-//            self.present(orbVC, animated: true, completion: nil)
-//        }
+//        self.streamPlaylist(playlistUri: playlistItem.playableUri)
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        if let orbVC = storyboard.instantiateViewController(withIdentifier: "OrbViewController") as? OrbViewController {
+            orbVC.spotifyData = (self.session, playlistItem.playableUri.absoluteString)
+            self.present(orbVC, animated: true, completion: nil)
+        }
         
     }
 }
 
-extension MusicPickerViewController: SPTAudioStreamingDelegate, SPTAudioStreamingPlaybackDelegate {
+/*extension MusicPickerViewController: SPTAudioStreamingDelegate, SPTAudioStreamingPlaybackDelegate {
     
     func audioStreamingDidLogin(_ audioStreaming: SPTAudioStreamingController!) {
         print("logged in")
@@ -232,81 +234,52 @@ extension MusicPickerViewController: SPTAudioStreamingDelegate, SPTAudioStreamin
                 }
 
             })
-//            var mytime = Timer.scheduledTimer(timeInterval: 0.2,
-//                                                   target: self,
-//                                                   selector: #selector(self.monitorAudioPlayer),
-//                                                   userInfo: nil,
-//                                                   repeats: true)
             self.audioConnection()
         }
     }
     
     func audioConnection() {
-//        let mixer = AVAudioMixerNode()
-        
-//        print("input: \(audioEngine.inputNode)")
-        
-//        audioEngine.attach(mixer)
-//        audioEngine.connect(audioEngine.inputNode, to: mixer, format: nil)
-        
-//        let mixer = audioEngine.mainMixerNode
-//        let bufferSize: AVAudioFrameCount = 4096
-//        let format = mixer.outputFormat(forBus: 0)
-//        print("format: \(format)")
-//
-//        mixer.installTap(onBus: 0, bufferSize: bufferSize, format: format) { (buffer, time) in
-//            print("in tap with time: \(time)")
-//        }
-        var channel0Power: Float = 0
         let inputNode = audioEngine.inputNode
         let bus = 0
+        audioEngine.inputNode.removeTap(onBus: bus)
         inputNode.installTap(onBus: bus, bufferSize: 2048, format: inputNode.inputFormat(forBus: bus)) {
             (buffer: AVAudioPCMBuffer!, time: AVAudioTime!) -> Void in
 //            print("time: \(AVAudioTime.seconds(forHostTime: time.hostTime))")
-
-            
-//            guard let data = buffer.floatChannelData?[0] else {
-//                return
-//            }
-//            var dbData = [Float](repeating: 0.0, count: 5)
-//            var one: Float = 0.0
-//            vDSP_vdbcon(data, 1, &one, &dbData, 1, vDSP_Length(Int(buffer.frameLength)), 1)
-//
-//
-//            var avgLevel: Float = 0.0
-//            var peakLevel: Float = 0.0
-//            vDSP_rmsqv(dbData, 1, &avgLevel, vDSP_Length(buffer.frameLength))
-//            vDSP_maxmgv(dbData, 1, &peakLevel, vDSP_Length(buffer.frameLength))
             buffer.frameLength = 2048
             let inNumberFrames = buffer.frameLength
+            let trigFilter: Float = 0.01
             if (buffer.format.channelCount > 0) {
                 let samples = buffer.floatChannelData![0]
                 var avgValue: Float = 0
                 
-                vDSP_meamgv(samples, 1, &avgValue, vDSP_Length(inNumberFrames))
+                vDSP_meamgv(samples, 1, &avgValue, vDSP_Length(inNumberFrames)) // max about -50
+//                vDSP_maxmgv(samples, 1, &avgValue, vDSP_Length(inNumberFrames)) // max about -39
                 let tempVal = ((avgValue == 0) ? -100 : 20.0 * log10f(avgValue))
-                let partTwo = ((1.0 - 0.20) * channel0Power)
-                channel0Power = (0.20 * tempVal) + partTwo
-                print("channel Power: \(channel0Power)")
+                let partTwo = ((1.0 - trigFilter) * self.channel0Power)
+                self.channel0Power = (trigFilter * tempVal) + partTwo
+                self.channel1Power = self.channel0Power
+                print("channel Power0: \(self.channel0Power)")
+            }
+            if (buffer.format.channelCount > 1) {
+                let samples = buffer.floatChannelData![1]
+                var avgValue: Float = 0
+                
+                vDSP_meamgv(samples, 1, &avgValue, vDSP_Length(inNumberFrames))
+//                vDSP_maxmgv(samples, 1, &avgValue, vDSP_Length(inNumberFrames))
+                let tempVal = ((avgValue == 0) ? -100 : 20.0 * log10f(avgValue))
+                let partTwo = ((1.0 - trigFilter) * self.channel1Power)
+                self.channel1Power = (trigFilter * tempVal) + partTwo
+                print("channel Power1: \(self.channel1Power)")
             }
         }
         
-        audioEngine.prepare()
         do {
             try audioEngine.start()
         } catch {
             print(error)
         }
     }
-    
-    @objc func monitorAudioPlayer() {
-        print("monitoring...")
-//        av.updateMeters()
-//        print("channels: \(av.numberOfChannels)")
-//        let peakPower = av.peakPower(forChannel: 0)
-//        print("peak: \(peakPower)")
-    }
-}
+}*/
 
 // TODO: move to separate file
 class UserPlaylistTableViewCell: UITableViewCell {
@@ -333,8 +306,4 @@ extension UIImageView {
             
         }).resume()
     }
-}
-
-extension SPTCoreAudioController {
-    
 }
