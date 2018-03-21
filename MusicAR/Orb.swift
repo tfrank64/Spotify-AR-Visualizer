@@ -18,13 +18,12 @@ class Orb: SCNNode, AVAudioPlayerDelegate {
     var audioChanges: Float = 1
     
     var player: SPTAudioStreamingController?
-    var isAuthenticated = false
+    var cleanupCallback: ((String?) -> Void)?
     let audioEngine = AVAudioEngine()
-    var channel0Power: Float = 0
-    var channel1Power: Float = 0
+    var channel0Power: Float = -60
+    var channel1Power: Float = -60
     
     init(anchor: ARPlaneAnchor, spotifyData: (SPTSession, String)) {
-        
         self.anchor = anchor
         self.session = spotifyData.0 // TODO: could read from local storage later
         self.playableUri = spotifyData.1
@@ -89,40 +88,15 @@ class Orb: SCNNode, AVAudioPlayerDelegate {
             }
         }
     }
-
-    func beginPlayingMusic() {
-//        if let audioFileURL = Bundle.main.url(forResource: "spiderManTheme", withExtension: "mp3") {
-//            do {
-//                self.audioPlayer = try AVAudioPlayer(contentsOf: audioFileURL)
-//                self.audioPlayer.isMeteringEnabled = true
-//                self.audioPlayer.delegate = self
-//                DispatchQueue.main.async {
-//                    if self.audioTimer == nil {
-//                        self.audioTimer = Timer.scheduledTimer(timeInterval: 0.2,
-//                                                               target: self,
-//                                                               selector: #selector(self.monitorAudioPlayer),
-//                                                               userInfo: nil,
-//                                                               repeats: true)
-//                    }
-//                    self.playPauseMusic()
-//                }
-//            } catch {
-//                print("Cannot init audio player: \(error.localizedDescription)")
-//            }
-//        }
-        
-        // play spotify music
-        
-    }
     
-    func playPauseMusic() {
-        if self.isPlaying {
-            self.audioPlayer.pause()
-        } else {
-            self.audioPlayer.play()
-        }
-        self.isPlaying = !self.isPlaying
-    }
+//    func playPauseMusic() {
+//        if self.isPlaying {
+//            self.audioPlayer.pause()
+//        } else {
+//            self.audioPlayer.play()
+//        }
+//        self.isPlaying = !self.isPlaying
+//    }
     
     @objc func monitorAudioPlayer() {
         self.audioPlayer.updateMeters()
@@ -151,17 +125,28 @@ class Orb: SCNNode, AVAudioPlayerDelegate {
         self.orbParticleSystem.particleSize = CGFloat(particleSize)
     }
     
-    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
-        guard self.audioTimer != nil else { return }
-        self.audioTimer?.invalidate()
-        self.audioTimer = nil
+//    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+//        guard self.audioTimer != nil else { return }
+//        self.audioTimer?.invalidate()
+//        self.audioTimer = nil
+//    }
+    
+    func cleanup(callback: @escaping (String?) -> Void) {
+        self.cleanupCallback = callback
+        self.audioEngine.stop()
+        if let player = self.player {
+            player.logout()
+        }
+    }
+    
+    deinit {
+        print("in deinit") // TODO is this called?
     }
 }
 
 extension Orb: SPTAudioStreamingDelegate, SPTAudioStreamingPlaybackDelegate {
     func audioStreamingDidLogin(_ audioStreaming: SPTAudioStreamingController!) {
         print("logged in")
-        self.isAuthenticated = true // TODO: may not need?
         self.streamPlaylist()
     }
     
@@ -177,19 +162,31 @@ extension Orb: SPTAudioStreamingDelegate, SPTAudioStreamingPlaybackDelegate {
         }
     }
     
+    func audioStreamingDidLogout(_ audioStreaming: SPTAudioStreamingController!) {
+        if let player = self.player, let callback = self.cleanupCallback {
+            do {
+                try player.stop()
+                SPTAuth.defaultInstance().session = nil
+                callback(nil)
+            } catch {
+                callback("Error stopping Spotify player")
+            }
+        }
+    }
+    
     func streamPlaylist() {
-        if let player = self.player, self.isAuthenticated {
+        if let player = self.player {
             player.playSpotifyURI(self.playableUri, startingWith: 0, startingWithPosition: 0, callback: { error in
                 if (error != nil) {
                     print("Error playing song: \(String(describing: error?.localizedDescription))")
                 }
-                
             })
             self.audioConnection()
         }
     }
     
     func audioConnection() {
+        // TODO: determine if we can ignore mic input
         let inputNode = audioEngine.inputNode
         let bus = 0
         audioEngine.inputNode.removeTap(onBus: bus)
@@ -203,24 +200,25 @@ extension Orb: SPTAudioStreamingDelegate, SPTAudioStreamingPlaybackDelegate {
                 var avgValue: Float = 0
                 
                 vDSP_meamgv(samples, 1, &avgValue, vDSP_Length(inNumberFrames)) // max about -50
-                //                vDSP_maxmgv(samples, 1, &avgValue, vDSP_Length(inNumberFrames)) // max about -39
+//                vDSP_maxmgv(samples, 1, &avgValue, vDSP_Length(inNumberFrames)) // max about -39
                 let tempVal = ((avgValue == 0) ? -100 : 20.0 * log10f(avgValue))
                 let partTwo = ((1.0 - trigFilter) * self.channel0Power)
                 self.channel0Power = (trigFilter * tempVal) + partTwo
                 self.channel1Power = self.channel0Power
                 print("channel Power0: \(self.channel0Power)")
+                self.updateOrb()
             }
-            if (buffer.format.channelCount > 1) {
-                let samples = buffer.floatChannelData![1]
-                var avgValue: Float = 0
-                
-                vDSP_meamgv(samples, 1, &avgValue, vDSP_Length(inNumberFrames))
-                //                vDSP_maxmgv(samples, 1, &avgValue, vDSP_Length(inNumberFrames))
-                let tempVal = ((avgValue == 0) ? -100 : 20.0 * log10f(avgValue))
-                let partTwo = ((1.0 - trigFilter) * self.channel1Power)
-                self.channel1Power = (trigFilter * tempVal) + partTwo
-                print("channel Power1: \(self.channel1Power)")
-            }
+//            if (buffer.format.channelCount > 1) {
+//                let samples = buffer.floatChannelData![1]
+//                var avgValue: Float = 0
+//                
+//                vDSP_meamgv(samples, 1, &avgValue, vDSP_Length(inNumberFrames))
+////                vDSP_maxmgv(samples, 1, &avgValue, vDSP_Length(inNumberFrames))
+//                let tempVal = ((avgValue == 0) ? -100 : 20.0 * log10f(avgValue))
+//                let partTwo = ((1.0 - trigFilter) * self.channel1Power)
+//                self.channel1Power = (trigFilter * tempVal) + partTwo
+//                print("channel Power1: \(self.channel1Power)")
+//            }
         }
         
         do {
@@ -228,6 +226,13 @@ extension Orb: SPTAudioStreamingDelegate, SPTAudioStreamingPlaybackDelegate {
         } catch {
             print(error)
         }
+    }
+    
+    func updateOrb() {
+        // find percentage between -60 to -50 or loudest sound?
+        // (input or power - -60) * 100 / (-50--60)
+        let percent = ((self.channel0Power - -60) * 100) / (-50 - -60)
+        print("percent in range: \(percent)")
     }
 }
 

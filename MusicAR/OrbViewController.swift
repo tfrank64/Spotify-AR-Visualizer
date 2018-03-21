@@ -17,11 +17,17 @@ class OrbViewController: UIViewController, ARSCNViewDelegate {
         self.sceneView = ARSCNView(frame: self.view.frame)
         self.view.addSubview(self.sceneView)
         
+        let backButton =  UIButton(frame: CGRect(x: -10, y: 10, width: 100, height: 44))
+        backButton.titleLabel?.textColor = UIColor.white
+        backButton.setTitle("Back", for: UIControlState.normal)
+        backButton.addTarget(self, action: #selector(dismissARView), for: .touchUpInside)
+        self.sceneView.addSubview(backButton)
+        
         // Set the view's delegate
         sceneView.delegate = self
         
         // Show statistics such as fps and timing information
-        sceneView.showsStatistics = true
+//        sceneView.showsStatistics = true
         self.sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints]
         
         let scene = SCNScene()
@@ -57,7 +63,6 @@ class OrbViewController: UIViewController, ARSCNViewDelegate {
             if self.orb == nil, let spotifyData = self.spotifyData {
                 self.orb = Orb(anchor: arAnchor, spotifyData: spotifyData)
                 node.addChildNode(self.orb!)
-//                self.orb!.beginPlayingMusic()
             }
         }
     }
@@ -75,5 +80,20 @@ class OrbViewController: UIViewController, ARSCNViewDelegate {
         
         // Pause the view's session
         sceneView.session.pause()
+    }
+    
+    @objc func dismissARView() {
+        if let createdOrb = self.orb {
+            createdOrb.cleanup(callback: { errorString in
+                if let message = errorString {
+                    print(message)
+                }
+                DispatchQueue.main.async {
+                    self.dismiss(animated: true, completion: nil)
+                }
+            })
+        } else {
+            self.dismiss(animated: true, completion: nil)
+        }
     }
 }
