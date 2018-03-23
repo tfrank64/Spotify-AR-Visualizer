@@ -7,16 +7,9 @@ import Accelerate
 class Orb: SCNNode, AVAudioPlayerDelegate {
     
     var anchor: ARPlaneAnchor
-    var session: SPTSession
     var playableUri: String
     
     var orbParticleSystem: SCNParticleSystem!
-    var audioPlayer: AVAudioPlayer!
-    var audioTimer: Timer?
-    var isPlaying = false
-    var baseSoundPower: Float = 0
-    var audioChanges: Float = 1
-    
     var player: SPTAudioStreamingController?
     var cleanupCallback: ((String?) -> Void)?
     let audioEngine = AVAudioEngine()
@@ -24,13 +17,12 @@ class Orb: SCNNode, AVAudioPlayerDelegate {
     var maxPowerLevel: Float = -50
     var channel0Power: Float = -63
     
-    init(anchor: ARPlaneAnchor, spotifyData: (SPTSession, String)) {
+    init(anchor: ARPlaneAnchor, spotifyPlaylistURI: String) {
         self.anchor = anchor
-        self.session = spotifyData.0 // TODO: could read from local storage later
-        self.playableUri = spotifyData.1
+        self.playableUri = spotifyPlaylistURI
         super.init()
         setup()
-        initializePlayer(authSession: self.session)
+        initializePlayer()
     }
     
     private func setup() {
@@ -76,8 +68,8 @@ class Orb: SCNNode, AVAudioPlayerDelegate {
     
     // MARK: Music playing/analysis methods
     
-    func initializePlayer(authSession: SPTSession) {
-        if self.player == nil, let auth = SPTAuth.defaultInstance() {
+    func initializePlayer() {
+        if self.player == nil, let auth = SPTAuth.defaultInstance(), let authSession = SPTSession.getStoredSession() {
             self.player = SPTAudioStreamingController.sharedInstance()
             self.player!.playbackDelegate = self
             self.player!.delegate = self
@@ -96,10 +88,6 @@ class Orb: SCNNode, AVAudioPlayerDelegate {
         if let player = self.player {
             player.logout()
         }
-    }
-    
-    deinit {
-        print("in deinit") // TODO is this called?
     }
 }
 

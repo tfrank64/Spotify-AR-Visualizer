@@ -1,10 +1,3 @@
-//
-//  MusicPickerViewController.swift
-//  MusicAR
-//
-//  Created by Taylor Franklin on 2/11/18.
-//  Copyright © 2018 Taylor Franklin. All rights reserved.
-//
 
 import UIKit
 import SafariServices
@@ -39,24 +32,14 @@ class MusicPickerViewController: UIViewController {
         auth.requestedScopes = [SPTAuthStreamingScope, SPTAuthPlaylistReadPrivateScope, SPTAuthPlaylistModifyPublicScope, SPTAuthPlaylistModifyPublicScope]
         loginUrl = auth.spotifyWebAuthenticationURL()
         
-        if let currentSession = getStoredSession() {
+        if let currentSession = SPTSession.getStoredSession() {
             self.session = currentSession
             setupPlaylists()
         }
     }
     
-    func getStoredSession() -> SPTSession? {
-        if let sessionObj: Any = UserDefaults.standard.object(forKey: "SpotifySession") as Any?,
-            let sessionDataObj = sessionObj as? Data,
-            let mySession = NSKeyedUnarchiver.unarchiveObject(with: sessionDataObj) as? SPTSession,
-            mySession.isValid() {
-            return mySession
-        }
-        return nil
-    }
-    
     @objc func updateAfterFirstLogin() {
-        if let firstTimeSession = getStoredSession() {
+        if let firstTimeSession = SPTSession.getStoredSession() {
             self.authViewController.dismiss(animated: true, completion: nil)
             self.session = firstTimeSession
             self.setupPlaylists()
@@ -84,7 +67,6 @@ class MusicPickerViewController: UIViewController {
                 print("Error getting playlists: \(String(describing: error?.localizedDescription))")
                 return
             }
-            print("hasNextPage? \(playlists.hasNextPage) and nextPage: \(playlists.nextPageURL)")
             self.masterPlaylistList = partialPlaylists
             if playlists.hasNextPage {
                 do {
@@ -178,39 +160,12 @@ extension MusicPickerViewController: UITableViewDelegate, UITableViewDataSource 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let playlistItem = self.masterPlaylistList[indexPath.item]
-//        self.streamPlaylist(playlistUri: playlistItem.playableUri)
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        
         if let orbVC = storyboard.instantiateViewController(withIdentifier: "OrbViewController") as? OrbViewController {
-            orbVC.spotifyData = (self.session, playlistItem.playableUri.absoluteString)
+            orbVC.spotifyPlaylistURI = playlistItem.playableUri.absoluteString
             self.present(orbVC, animated: true, completion: nil)
         }
         
-    }
-}
-
-// TODO: move to separate file
-class UserPlaylistTableViewCell: UITableViewCell {
-    @IBOutlet weak var playlistImageView: UIImageView!
-    @IBOutlet weak var playlistTitle: UILabel!
-    @IBOutlet weak var playlistTracksLabel: UILabel!
-}
-
-extension UIImageView {
-    public func imageFromServerURL(url: URL, defaultImage: String?) {
-        if let defaultImg = defaultImage {
-            self.image = UIImage(named: defaultImg)
-        }
-        
-        URLSession.shared.dataTask(with: url, completionHandler: { (data, response, error) -> Void in
-            guard error == nil, let imageData = data else {
-                print("Error getting image data: \(String(describing: error?.localizedDescription))")
-                return
-            }
-            DispatchQueue.main.async {
-                let image = UIImage(data: imageData)
-                self.image = image
-            }
-            
-        }).resume()
     }
 }

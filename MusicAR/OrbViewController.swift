@@ -2,7 +2,7 @@ import UIKit
 import SceneKit
 import ARKit
 
-// particles and fix TODOs
+// have environment sound pickup option
 // Have user pick color or "party mode". they pick song and go.
 // tap orb to play/pause, swipe to skip
 // Have sound increase/decrease based on orb proximity
@@ -10,7 +10,7 @@ class OrbViewController: UIViewController, ARSCNViewDelegate {
     
     var sceneView: ARSCNView!
     var orb: Orb?
-    var spotifyData: (SPTSession, String)?
+    var spotifyPlaylistURI: String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,7 +28,6 @@ class OrbViewController: UIViewController, ARSCNViewDelegate {
         sceneView.delegate = self
         
         // Show statistics such as fps and timing information
-//        sceneView.showsStatistics = true
         self.sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints]
         
         let scene = SCNScene()
@@ -61,9 +60,10 @@ class OrbViewController: UIViewController, ARSCNViewDelegate {
     
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
         if let arAnchor = anchor as? ARPlaneAnchor {
-            if self.orb == nil, let spotifyData = self.spotifyData {
-                self.orb = Orb(anchor: arAnchor, spotifyData: spotifyData)
+            if self.orb == nil, let spotifyPlaylistURI = self.spotifyPlaylistURI {
+                self.orb = Orb(anchor: arAnchor, spotifyPlaylistURI: spotifyPlaylistURI)
                 node.addChildNode(self.orb!)
+                self.sceneView.debugOptions = []
             }
         }
     }
