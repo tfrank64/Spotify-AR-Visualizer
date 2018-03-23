@@ -2,6 +2,7 @@ import UIKit
 import SceneKit
 import ARKit
 
+// particles and fix TODOs
 // Have user pick color or "party mode". they pick song and go.
 // tap orb to play/pause, swipe to skip
 // Have sound increase/decrease based on orb proximity

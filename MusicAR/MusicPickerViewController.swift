@@ -110,7 +110,6 @@ class MusicPickerViewController: UIViewController {
                 do {
                     let playlists = try SPTPlaylistList(from: playlistData, with: resp)
                     if let partialPlaylists = playlists.items as? [SPTPartialPlaylist] {
-                        print("hasNextPage? \(playlists.hasNextPage) and nextPage: \(playlists.nextPageURL)")
                         self.masterPlaylistList += partialPlaylists
                         if playlists.hasNextPage {
                             do {

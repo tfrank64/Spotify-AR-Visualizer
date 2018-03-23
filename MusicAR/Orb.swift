@@ -20,8 +20,9 @@ class Orb: SCNNode, AVAudioPlayerDelegate {
     var player: SPTAudioStreamingController?
     var cleanupCallback: ((String?) -> Void)?
     let audioEngine = AVAudioEngine()
-    var channel0Power: Float = -60
-    var channel1Power: Float = -60
+    let minPowerLevel: Float = -63
+    var maxPowerLevel: Float = -50
+    var channel0Power: Float = -63
     
     init(anchor: ARPlaneAnchor, spotifyData: (SPTSession, String)) {
         self.anchor = anchor
@@ -89,48 +90,6 @@ class Orb: SCNNode, AVAudioPlayerDelegate {
         }
     }
     
-//    func playPauseMusic() {
-//        if self.isPlaying {
-//            self.audioPlayer.pause()
-//        } else {
-//            self.audioPlayer.play()
-//        }
-//        self.isPlaying = !self.isPlaying
-//    }
-    
-    @objc func monitorAudioPlayer() {
-        self.audioPlayer.updateMeters()
-        guard self.audioPlayer.numberOfChannels > 0 else { return }
-        let peakPower = self.audioPlayer.peakPower(forChannel: 0)
-
-        // Get average start power as a baseline
-        if self.audioChanges <= 5 {
-            self.baseSoundPower = self.baseSoundPower + peakPower
-            if self.audioChanges == 5 {
-                self.baseSoundPower = self.baseSoundPower / self.audioChanges
-            }
-            self.audioChanges += 1
-            return
-        }
-        let valueInRange = (peakPower - self.baseSoundPower)/(0 - self.baseSoundPower)
-        let birthRate = valueInRange * 300 //(x - start)/(end - start)
-//        print("birthrate: \(birthRate)")
-        self.orbParticleSystem.birthRate = CGFloat(birthRate)
-        print("valueInrange: \(valueInRange)")
-        let particleVelocity = valueInRange * 2
-//        print("velocity: \(particleVelocity)")
-        self.orbParticleSystem.particleVelocity = CGFloat(particleVelocity)
-        let particleSize = valueInRange * 0.25
-//        print("size: \(particleSize)")
-        self.orbParticleSystem.particleSize = CGFloat(particleSize)
-    }
-    
-//    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
-//        guard self.audioTimer != nil else { return }
-//        self.audioTimer?.invalidate()
-//        self.audioTimer = nil
-//    }
-    
     func cleanup(callback: @escaping (String?) -> Void) {
         self.cleanupCallback = callback
         self.audioEngine.stop()
@@ -145,8 +104,8 @@ class Orb: SCNNode, AVAudioPlayerDelegate {
 }
 
 extension Orb: SPTAudioStreamingDelegate, SPTAudioStreamingPlaybackDelegate {
+    
     func audioStreamingDidLogin(_ audioStreaming: SPTAudioStreamingController!) {
-        print("logged in")
         self.streamPlaylist()
     }
     
@@ -181,12 +140,11 @@ extension Orb: SPTAudioStreamingDelegate, SPTAudioStreamingPlaybackDelegate {
                     print("Error playing song: \(String(describing: error?.localizedDescription))")
                 }
             })
-            self.audioConnection()
+            self.initializeMicTap()
         }
     }
     
-    func audioConnection() {
-        // TODO: determine if we can ignore mic input
+    func initializeMicTap() {
         let inputNode = audioEngine.inputNode
         let bus = 0
         audioEngine.inputNode.removeTap(onBus: bus)
@@ -199,26 +157,14 @@ extension Orb: SPTAudioStreamingDelegate, SPTAudioStreamingPlaybackDelegate {
                 let samples = buffer.floatChannelData![0]
                 var avgValue: Float = 0
                 
-                vDSP_meamgv(samples, 1, &avgValue, vDSP_Length(inNumberFrames)) // max about -50
-//                vDSP_maxmgv(samples, 1, &avgValue, vDSP_Length(inNumberFrames)) // max about -39
+                // https://stackoverflow.com/questions/30641439/level-metering-with-avaudioengine
+                vDSP_meamgv(samples, 1, &avgValue, vDSP_Length(inNumberFrames))
                 let tempVal = ((avgValue == 0) ? -100 : 20.0 * log10f(avgValue))
                 let partTwo = ((1.0 - trigFilter) * self.channel0Power)
                 self.channel0Power = (trigFilter * tempVal) + partTwo
-                self.channel1Power = self.channel0Power
                 print("channel Power0: \(self.channel0Power)")
                 self.updateOrb()
             }
-//            if (buffer.format.channelCount > 1) {
-//                let samples = buffer.floatChannelData![1]
-//                var avgValue: Float = 0
-//                
-//                vDSP_meamgv(samples, 1, &avgValue, vDSP_Length(inNumberFrames))
-////                vDSP_maxmgv(samples, 1, &avgValue, vDSP_Length(inNumberFrames))
-//                let tempVal = ((avgValue == 0) ? -100 : 20.0 * log10f(avgValue))
-//                let partTwo = ((1.0 - trigFilter) * self.channel1Power)
-//                self.channel1Power = (trigFilter * tempVal) + partTwo
-//                print("channel Power1: \(self.channel1Power)")
-//            }
         }
         
         do {
@@ -229,10 +175,22 @@ extension Orb: SPTAudioStreamingDelegate, SPTAudioStreamingPlaybackDelegate {
     }
     
     func updateOrb() {
-        // find percentage between -60 to -50 or loudest sound?
-        // (input or power - -60) * 100 / (-50--60)
-        let percent = ((self.channel0Power - -60) * 100) / (-50 - -60)
-        print("percent in range: \(percent)")
+        // (input or power - minPower) / (dynamicMaxPower - minPower)
+        if self.channel0Power > self.maxPowerLevel {
+            self.maxPowerLevel = self.channel0Power
+        }
+        var percentInRange = ((self.channel0Power - self.minPowerLevel)) / (self.maxPowerLevel - minPowerLevel)
+        if percentInRange < 0 { percentInRange = 0 }
+        
+        let birthRate = percentInRange * 300
+//        print("birthrate: \(birthRate)")
+        self.orbParticleSystem.birthRate = CGFloat(birthRate)
+        let particleVelocity = percentInRange * 2
+//        print("velocity: \(particleVelocity)")
+        self.orbParticleSystem.particleVelocity = CGFloat(particleVelocity)
+        let particleSize = percentInRange * 0.20
+//        print("size: \(particleSize)")
+        self.orbParticleSystem.particleSize = CGFloat(particleSize)
     }
 }
 
