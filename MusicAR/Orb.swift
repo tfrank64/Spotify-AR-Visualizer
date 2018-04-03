@@ -82,6 +82,18 @@ class Orb: SCNNode, AVAudioPlayerDelegate {
         }
     }
     
+    func playOrPause() {
+        self.player!.setIsPlaying(!self.player!.playbackState.isPlaying, callback: nil)
+    }
+    
+    func nextTrack() {
+        self.player!.skipNext(nil)
+    }
+    
+    func backTrack() {
+        self.player!.skipPrevious(nil)
+    }
+    
     func cleanup(callback: @escaping (String?) -> Void) {
         self.cleanupCallback = callback
         self.audioEngine.stop()
@@ -98,7 +110,7 @@ extension Orb: SPTAudioStreamingDelegate, SPTAudioStreamingPlaybackDelegate {
     }
     
     func audioStreaming(_ audioStreaming: SPTAudioStreamingController!, didReceive event: SpPlaybackEvent) {
-        print("EVENT: \(event.rawValue)")
+//        print("EVENT: \(event.rawValue)")
         if event == SPPlaybackNotifyPlay {
             audioStreaming.setShuffle(true, callback: { error in
                 guard error == nil else {
@@ -150,7 +162,7 @@ extension Orb: SPTAudioStreamingDelegate, SPTAudioStreamingPlaybackDelegate {
                 let tempVal = ((avgValue == 0) ? -100 : 20.0 * log10f(avgValue))
                 let partTwo = ((1.0 - trigFilter) * self.channel0Power)
                 self.channel0Power = (trigFilter * tempVal) + partTwo
-                print("channel Power0: \(self.channel0Power)")
+//                print("channel Power0: \(self.channel0Power)")
                 self.updateOrb()
             }
         }

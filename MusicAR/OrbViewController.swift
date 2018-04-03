@@ -4,7 +4,6 @@ import ARKit
 
 // have environment sound pickup option
 // Have user pick color or "party mode". they pick song and go.
-// tap orb to play/pause, swipe to skip
 // Have sound increase/decrease based on orb proximity
 class OrbViewController: UIViewController, ARSCNViewDelegate {
     
@@ -63,7 +62,47 @@ class OrbViewController: UIViewController, ARSCNViewDelegate {
             if self.orb == nil, let spotifyPlaylistURI = self.spotifyPlaylistURI {
                 self.orb = Orb(anchor: arAnchor, spotifyPlaylistURI: spotifyPlaylistURI)
                 node.addChildNode(self.orb!)
-                self.sceneView.debugOptions = []
+                DispatchQueue.main.async {
+                    self.sceneView.debugOptions = []
+                    self.registerGestureRecognizers()
+                }
+            }
+        }
+    }
+    
+    // MARK: Gestures for handling music playback
+    
+    private func registerGestureRecognizers() {
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(tapped))
+        let rightSwipeGestureRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(swiped))
+        let leftSwipeGestureRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(swiped))
+        leftSwipeGestureRecognizer.direction = UISwipeGestureRecognizerDirection.left
+        self.sceneView.addGestureRecognizer(tapGestureRecognizer)
+        self.sceneView.addGestureRecognizer(rightSwipeGestureRecognizer)
+        self.sceneView.addGestureRecognizer(leftSwipeGestureRecognizer)
+    }
+    
+    @objc func tapped(recognizer: UIGestureRecognizer) {
+        if recognizer.state == .ended {
+            let location: CGPoint = recognizer.location(in: self.sceneView)
+            let hits = self.sceneView.hitTest(location, options: nil)
+            if !hits.isEmpty {
+                self.orb!.playOrPause()
+            }
+        }
+    }
+    
+    @objc func swiped(recognizer: UIGestureRecognizer) {
+        if recognizer.state == .ended {
+            let location: CGPoint = recognizer.location(in: self.sceneView)
+            let hits = self.sceneView.hitTest(location, options: nil)
+            if !hits.isEmpty {
+                if let swipeGesture = recognizer as? UISwipeGestureRecognizer,
+                       swipeGesture.direction == UISwipeGestureRecognizerDirection.right {
+                    self.orb!.nextTrack()
+                } else {
+                    self.orb!.backTrack()
+                }
             }
         }
     }
