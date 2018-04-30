@@ -94,6 +94,16 @@ class Orb: SCNNode, AVAudioPlayerDelegate {
         self.player!.skipPrevious(nil)
     }
     
+    func adjustVolumeLevel(level: CGFloat) {
+        
+        let volumeInRange = ((level * 0.01) - 0) / (2 - 0)
+        self.player!.setVolume(SPTVolume(1 - volumeInRange)) { volError in
+            if volError != nil {
+                print("Error adjusting volume: \(String(describing: volError))")
+            }
+        }
+    }
+    
     func cleanup(callback: @escaping (String?) -> Void) {
         self.cleanupCallback = callback
         self.audioEngine.stop()
@@ -162,7 +172,6 @@ extension Orb: SPTAudioStreamingDelegate, SPTAudioStreamingPlaybackDelegate {
                 let tempVal = ((avgValue == 0) ? -100 : 20.0 * log10f(avgValue))
                 let partTwo = ((1.0 - trigFilter) * self.channel0Power)
                 self.channel0Power = (trigFilter * tempVal) + partTwo
-//                print("channel Power0: \(self.channel0Power)")
                 self.updateOrb()
             }
         }

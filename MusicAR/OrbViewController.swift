@@ -4,12 +4,12 @@ import ARKit
 
 // have environment sound pickup option
 // Have user pick color or "party mode". they pick song and go.
-// Have sound increase/decrease based on orb proximity
-class OrbViewController: UIViewController, ARSCNViewDelegate {
+class OrbViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
     
     var sceneView: ARSCNView!
     var orb: Orb?
     var spotifyPlaylistURI: String?
+    var distanceFromOrb: CGFloat = 12
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,6 +25,7 @@ class OrbViewController: UIViewController, ARSCNViewDelegate {
         
         // Set the view's delegate
         sceneView.delegate = self
+        sceneView.session.delegate = self
         
         // Show statistics such as fps and timing information
         self.sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints]
@@ -62,10 +63,29 @@ class OrbViewController: UIViewController, ARSCNViewDelegate {
             if self.orb == nil, let spotifyPlaylistURI = self.spotifyPlaylistURI {
                 self.orb = Orb(anchor: arAnchor, spotifyPlaylistURI: spotifyPlaylistURI)
                 node.addChildNode(self.orb!)
+                // Set initial music volume level based on distance from orb
+                if let currentFrame = self.sceneView.session.currentFrame {
+                    self.distanceFromOrb = self.orb!.position.distance(to: currentFrame.camera.transform.position())
+                    self.orb!.adjustVolumeLevel(level: self.distanceFromOrb)
+                }
                 DispatchQueue.main.async {
                     self.sceneView.debugOptions = []
                     self.registerGestureRecognizers()
                 }
+            }
+        }
+    }
+    
+    // MARK: ARSessionDelegate methods
+    
+    func session(_ session: ARSession, didUpdate frame: ARFrame) {
+        if let orb = self.orb {
+            let distance = orb.position.distance(to: frame.camera.transform.position())
+            let distanceDiff = self.distanceFromOrb - distance
+            // Only make volume changes in changes of distance of 5in or more
+            if abs(distanceDiff) >= 5.0 {
+                self.distanceFromOrb = distance
+                self.orb!.adjustVolumeLevel(level: self.distanceFromOrb)
             }
         }
     }
@@ -135,5 +155,25 @@ class OrbViewController: UIViewController, ARSCNViewDelegate {
         } else {
             self.dismiss(animated: true, completion: nil)
         }
+    }
+}
+
+extension SCNVector3 {
+    
+    func distance(to destination: SCNVector3) -> CGFloat {
+        let dx = destination.x - x
+        let dy = destination.y - y
+        let dz = destination.z - z
+        
+        let meters = sqrt(dx*dx + dy*dy + dz*dz)
+        let inches: Float = 39.3701
+        
+        return CGFloat(meters * inches)
+    }
+}
+
+extension matrix_float4x4 {
+    func position() -> SCNVector3 {
+        return SCNVector3(columns.3.x, columns.3.y, columns.3.z)
     }
 }
