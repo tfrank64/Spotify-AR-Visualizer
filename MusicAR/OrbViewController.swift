@@ -2,13 +2,12 @@ import UIKit
 import SceneKit
 import ARKit
 
-// have environment sound pickup option
-// Have user pick color or "party mode". they pick song and go.
 class OrbViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
     
     var sceneView: ARSCNView!
     var orb: Orb?
     var spotifyPlaylistURI: String?
+    var selectedParticleColor: UIColor?
     var distanceFromOrb: CGFloat = 12
     
     override func viewDidLoad() {
@@ -18,9 +17,11 @@ class OrbViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate 
         self.view.addSubview(self.sceneView)
         
         let backButton =  UIButton(frame: CGRect(x: -10, y: 10, width: 100, height: 44))
+        
         backButton.titleLabel?.textColor = UIColor.white
-        backButton.setTitle("Back", for: UIControlState.normal)
+        backButton.setTitle("Exit", for: UIControlState.normal)
         backButton.addTarget(self, action: #selector(dismissARView), for: .touchUpInside)
+        backButton.alpha = 0.4
         self.sceneView.addSubview(backButton)
         
         // Set the view's delegate
@@ -60,8 +61,8 @@ class OrbViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate 
     
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
         if let arAnchor = anchor as? ARPlaneAnchor {
-            if self.orb == nil, let spotifyPlaylistURI = self.spotifyPlaylistURI {
-                self.orb = Orb(anchor: arAnchor, spotifyPlaylistURI: spotifyPlaylistURI)
+            if self.orb == nil, let spotifyPlaylistURI = self.spotifyPlaylistURI, let selectedColor = self.selectedParticleColor {
+                self.orb = Orb(anchor: arAnchor, spotifyPlaylistURI: spotifyPlaylistURI, selectedParticleColor: selectedColor)
                 node.addChildNode(self.orb!)
                 // Set initial music volume level based on distance from orb
                 if let currentFrame = self.sceneView.session.currentFrame {

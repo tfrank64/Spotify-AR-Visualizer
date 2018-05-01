@@ -15,6 +15,7 @@ class MusicPickerViewController: UIViewController {
     var authViewController: UIViewController!
     var masterPlaylistList = [SPTPartialPlaylist]()
     var nextPlaylistPageRequest: URLRequest?
+    var selectedParticleColor = UIColor.blue
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -118,11 +119,21 @@ class MusicPickerViewController: UIViewController {
 
 extension MusicPickerViewController: UITableViewDelegate, UITableViewDataSource {
     
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 2
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if section == 0 {
+            return 2
+        }
         return self.masterPlaylistList.count
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        if section == 0 {
+            return "Settings"
+        }
         return "Select Playlist"
     }
     
@@ -141,6 +152,12 @@ extension MusicPickerViewController: UITableViewDelegate, UITableViewDataSource 
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if indexPath.section == 0 {
+            let cell = UITableViewCell()
+            cell.textLabel?.text = indexPath.row == 0 ? "Color Settings" : "Microphone Listener"
+            return cell
+        }
+        
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "playlistCell", for: indexPath) as? UserPlaylistTableViewCell else {
             print("Failed to create PlaylistTableViewCell")
             return UITableViewCell()
@@ -153,18 +170,62 @@ extension MusicPickerViewController: UITableViewDelegate, UITableViewDataSource 
         } else {
             cell.playlistImageView.image = UIImage(named: "default")
         }
-        print("playable uri: \(playlistItem.playableUri)")
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let playlistItem = self.masterPlaylistList[indexPath.item]
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        
-        if let orbVC = storyboard.instantiateViewController(withIdentifier: "OrbViewController") as? OrbViewController {
-            orbVC.spotifyPlaylistURI = playlistItem.playableUri.absoluteString
-            self.present(orbVC, animated: true, completion: nil)
+        if indexPath.section == 0 {
+            
+            let handler = { (action: UIAlertAction) in
+                switch action.title! {
+                    case "Red": self.selectedParticleColor = UIColor.red
+                    case "Blue": self.selectedParticleColor = UIColor.blue
+                    case "Green": self.selectedParticleColor = UIColor.green
+                    case "Yellow": self.selectedParticleColor = UIColor.yellow
+                    case "Purple": self.selectedParticleColor = UIColor.purple
+                    case "Cyan": self.selectedParticleColor = UIColor.cyan
+                    case "Orange": self.selectedParticleColor = UIColor.orange
+                    default: self.selectedParticleColor = UIColor.blue
+                }
+            }
+            
+            if indexPath.row == 0 {
+                // launch color settings
+                let colorMenu = UIAlertController(title: nil, message: "Select a color", preferredStyle: .actionSheet)
+                let redAction =  UIAlertAction(title: "Red", style: .default, handler: handler)
+                let blueAction =  UIAlertAction(title: "Blue", style: .default, handler: handler)
+                let greenAction =  UIAlertAction(title: "Green", style: .default, handler: handler)
+                let yellowAction =  UIAlertAction(title: "Yellow", style: .default, handler: handler)
+                let purpleAction =  UIAlertAction(title: "Purple", style: .default, handler: handler)
+                let cyanAction =  UIAlertAction(title: "Cyan", style: .default, handler: handler)
+                let orangeAction =  UIAlertAction(title: "Orange", style: .default, handler: handler)
+                let cancelAction =  UIAlertAction(title: "Cancel", style: .destructive, handler: nil)
+                colorMenu.addAction(redAction)
+                colorMenu.addAction(blueAction)
+                colorMenu.addAction(greenAction)
+                colorMenu.addAction(yellowAction)
+                colorMenu.addAction(purpleAction)
+                colorMenu.addAction(cyanAction)
+                colorMenu.addAction(orangeAction)
+                colorMenu.addAction(cancelAction)
+                self.present(colorMenu, animated: true, completion: nil)
+            } else {
+                // launch AR view, no song
+                if let orbVC = storyboard.instantiateViewController(withIdentifier: "OrbViewController") as? OrbViewController {
+                    orbVC.spotifyPlaylistURI = ""
+                    orbVC.selectedParticleColor = self.selectedParticleColor
+                    self.present(orbVC, animated: true, completion: nil)
+                }
+            }
+        } else {
+            let playlistItem = self.masterPlaylistList[indexPath.item]
+            if let orbVC = storyboard.instantiateViewController(withIdentifier: "OrbViewController") as? OrbViewController {
+                orbVC.spotifyPlaylistURI = playlistItem.playableUri.absoluteString
+                orbVC.selectedParticleColor = self.selectedParticleColor
+                self.present(orbVC, animated: true, completion: nil)
+            }
         }
         
     }

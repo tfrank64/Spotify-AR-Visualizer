@@ -8,6 +8,7 @@ class Orb: SCNNode, AVAudioPlayerDelegate {
     
     var anchor: ARPlaneAnchor
     var playableUri: String
+    var selectedParticleColor: UIColor
     
     var orbParticleSystem: SCNParticleSystem!
     var player: SPTAudioStreamingController?
@@ -17,9 +18,10 @@ class Orb: SCNNode, AVAudioPlayerDelegate {
     var maxPowerLevel: Float = -50
     var channel0Power: Float = -63
     
-    init(anchor: ARPlaneAnchor, spotifyPlaylistURI: String) {
+    init(anchor: ARPlaneAnchor, spotifyPlaylistURI: String, selectedParticleColor: UIColor) {
         self.anchor = anchor
         self.playableUri = spotifyPlaylistURI
+        self.selectedParticleColor = selectedParticleColor
         super.init()
         setup()
         initializePlayer()
@@ -43,7 +45,7 @@ class Orb: SCNNode, AVAudioPlayerDelegate {
         
         sphereNode.position = SCNVector3(anchor.center.x, 0.2, anchor.center.z)
         
-        let sphereEmitter = createSphericalEmission(color: UIColor.blue, geometry: sphere)
+        let sphereEmitter = createSphericalEmission(color: self.selectedParticleColor, geometry: sphere)
         sphereNode.addParticleSystem(sphereEmitter)
         
         // add to the parent
@@ -120,7 +122,6 @@ extension Orb: SPTAudioStreamingDelegate, SPTAudioStreamingPlaybackDelegate {
     }
     
     func audioStreaming(_ audioStreaming: SPTAudioStreamingController!, didReceive event: SpPlaybackEvent) {
-//        print("EVENT: \(event.rawValue)")
         if event == SPPlaybackNotifyPlay {
             audioStreaming.setShuffle(true, callback: { error in
                 guard error == nil else {
@@ -144,14 +145,14 @@ extension Orb: SPTAudioStreamingDelegate, SPTAudioStreamingPlaybackDelegate {
     }
     
     func streamPlaylist() {
-        if let player = self.player {
+        if let player = self.player, self.playableUri.count > 0 {
             player.playSpotifyURI(self.playableUri, startingWith: 0, startingWithPosition: 0, callback: { error in
                 if (error != nil) {
                     print("Error playing song: \(String(describing: error?.localizedDescription))")
                 }
             })
-            self.initializeMicTap()
         }
+        self.initializeMicTap()
     }
     
     func initializeMicTap() {
@@ -192,13 +193,10 @@ extension Orb: SPTAudioStreamingDelegate, SPTAudioStreamingPlaybackDelegate {
         if percentInRange < 0 { percentInRange = 0 }
         
         let birthRate = percentInRange * 300
-//        print("birthrate: \(birthRate)")
         self.orbParticleSystem.birthRate = CGFloat(birthRate)
         let particleVelocity = percentInRange * 2
-//        print("velocity: \(particleVelocity)")
         self.orbParticleSystem.particleVelocity = CGFloat(particleVelocity)
         let particleSize = percentInRange * 0.20
-//        print("size: \(particleSize)")
         self.orbParticleSystem.particleSize = CGFloat(particleSize)
     }
 }
