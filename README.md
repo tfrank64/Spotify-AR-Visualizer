@@ -7,10 +7,10 @@ This is a sample iOS app I made just for fun to become more familiar with ARKit 
 
 ## App Features
 
-* You can play your own Spotify music through the app
-* Music visualizer responds to microphone levels
+* You can play your own Spotify music through the app.
+* Music visualizer responds to microphone levels.
 * Moving closer and further from AR orb increases and reduces the music's volume level.
-* The app works with the ambient sounds where you are, no Spotify needed.
+* The app can work with ambient sounds where you are, no Spotify needed.
 * You can the change the color of the AR particles.
 
 ## Try It Yourself
