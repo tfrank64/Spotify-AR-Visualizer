@@ -1,11 +1,3 @@
-//
-//  AppDelegate.swift
-//  MusicAR
-//
-//  Created by Taylor Franklin on 1/23/18.
-//  Copyright © 2018 Taylor Franklin. All rights reserved.
-//
-
 import UIKit
 
 @UIApplicationMain
@@ -25,7 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             auth.handleAuthCallback(withTriggeredAuthURL: url, callback: { (error, session) in
 
                 guard error == nil, let spotifySession = session else {
-                    print("error: \(String(describing: error?.localizedDescription))")
+                    print("Auth error: \(String(describing: error?.localizedDescription))")
                     return
                 }
 

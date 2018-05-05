@@ -33,7 +33,7 @@ class OrbViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate 
         
         let scene = SCNScene()
         sceneView.scene = scene
-        insertLighting(position: SCNVector3(1.0,2.0,-1))
+        insertLighting(position: SCNVector3(1.0, 2.0, -1))
     }
     
     private func insertLighting(position: SCNVector3) {
@@ -61,6 +61,7 @@ class OrbViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate 
     
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
         if let arAnchor = anchor as? ARPlaneAnchor {
+            // Initial orb creation and setup
             if self.orb == nil, let spotifyPlaylistURI = self.spotifyPlaylistURI, let selectedColor = self.selectedParticleColor {
                 self.orb = Orb(anchor: arAnchor, spotifyPlaylistURI: spotifyPlaylistURI, selectedParticleColor: selectedColor)
                 node.addChildNode(self.orb!)
@@ -83,7 +84,7 @@ class OrbViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate 
         if let orb = self.orb {
             let distance = orb.position.distance(to: frame.camera.transform.position())
             let distanceDiff = self.distanceFromOrb - distance
-            // Only make volume changes in changes of distance of 5in or more
+            // Only make volume adjustments in changes of distance of 5 inches or more
             if abs(distanceDiff) >= 5.0 {
                 self.distanceFromOrb = distance
                 self.orb!.adjustVolumeLevel(level: self.distanceFromOrb)
@@ -128,6 +129,8 @@ class OrbViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate 
         }
     }
     
+    // Lifecycle methods
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
@@ -138,8 +141,6 @@ class OrbViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate 
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        
-        // Pause the view's session
         sceneView.session.pause()
     }
     

@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Needed in case we need audio level monitoring.</string>
+	<string>Needed for audio level monitoring.</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>

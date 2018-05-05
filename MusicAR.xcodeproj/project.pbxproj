@@ -29,8 +29,6 @@
 		6BA74A42201C3E9C0079194B /* greasy-pan-2-normal.png in Resources */ = {isa = PBXBuildFile; fileRef = 6BA74A3E201C3E990079194B /* greasy-pan-2-normal.png */; };
 		6BA74A43201C3E9C0079194B /* greasy-pan-2-albedo.png in Resources */ = {isa = PBXBuildFile; fileRef = 6BA74A3F201C3E9A0079194B /* greasy-pan-2-albedo.png */; };
 		6BA74A44201C3E9C0079194B /* greasy-pan-2-roughness.png in Resources */ = {isa = PBXBuildFile; fileRef = 6BA74A40201C3E9C0079194B /* greasy-pan-2-roughness.png */; };
-		6BA74A47201C41040079194B /* OverlayPlane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BA74A45201C41040079194B /* OverlayPlane.swift */; };
-		6BA74A48201C41040079194B /* overlay_grid.png in Resources */ = {isa = PBXBuildFile; fileRef = 6BA74A46201C41040079194B /* overlay_grid.png */; };
 		6BA74A4A201C4D880079194B /* Orb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BA74A49201C4D870079194B /* Orb.swift */; };
 		6BCAD9F2201CED3300D74914 /* bokeh.png in Resources */ = {isa = PBXBuildFile; fileRef = 6BCAD9F0201CED3300D74914 /* bokeh.png */; };
 		6BDC348A2096DC93001F2F69 /* VectorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BDC34892096DC93001F2F69 /* VectorExtension.swift */; };
@@ -62,8 +60,6 @@
 		6BA74A3E201C3E990079194B /* greasy-pan-2-normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "greasy-pan-2-normal.png"; sourceTree = "<group>"; };
 		6BA74A3F201C3E9A0079194B /* greasy-pan-2-albedo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "greasy-pan-2-albedo.png"; sourceTree = "<group>"; };
 		6BA74A40201C3E9C0079194B /* greasy-pan-2-roughness.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "greasy-pan-2-roughness.png"; sourceTree = "<group>"; };
-		6BA74A45201C41040079194B /* OverlayPlane.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OverlayPlane.swift; sourceTree = "<group>"; };
-		6BA74A46201C41040079194B /* overlay_grid.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = overlay_grid.png; sourceTree = "<group>"; };
 		6BA74A49201C4D870079194B /* Orb.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Orb.swift; sourceTree = "<group>"; };
 		6BCAD9F0201CED3300D74914 /* bokeh.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bokeh.png; sourceTree = "<group>"; };
 		6BDC34892096DC93001F2F69 /* VectorExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VectorExtension.swift; sourceTree = "<group>"; };
@@ -103,6 +99,7 @@
 		6B16133F20184F4900F51853 /* MusicAR */ = {
 			isa = PBXGroup;
 			children = (
+				6B2E55A3209D654100B47ABD /* Extensions */,
 				6B941536201CF03D00CBEBF3 /* ambient.scnp */,
 				6B16134020184F4900F51853 /* AppDelegate.swift */,
 				6B16134220184F4900F51853 /* art.scnassets */,
@@ -111,17 +108,12 @@
 				6B16134E20184F4A00F51853 /* Info.plist */,
 				6B16134B20184F4A00F51853 /* LaunchScreen.storyboard */,
 				6B16134620184F4A00F51853 /* Main.storyboard */,
+				6B2E5EEB20315D3E001C26DC /* MusicAR-Bridging-Header.h */,
+				6B2E5EDC2031568C001C26DC /* MusicPickerViewController.swift */,
 				6BA74A49201C4D870079194B /* Orb.swift */,
 				6B16134420184F4A00F51853 /* OrbViewController.swift */,
-				6BA74A46201C41040079194B /* overlay_grid.png */,
-				6BA74A45201C41040079194B /* OverlayPlane.swift */,
 				6B161354201855CF00F51853 /* Textures */,
-				6B2E5EDC2031568C001C26DC /* MusicPickerViewController.swift */,
-				6B2E5EEB20315D3E001C26DC /* MusicAR-Bridging-Header.h */,
-				6B99A6CA2064B5B80068079D /* UIImageViewExtension.swift */,
 				6B99A6CC2064B7430068079D /* UserPlaylistTableViewCell.swift */,
-				6B99A6CE2064B95F0068079D /* SPTSessionExtenion.swift */,
-				6BDC34892096DC93001F2F69 /* VectorExtension.swift */,
 			);
 			path = MusicAR;
 			sourceTree = "<group>";
@@ -139,6 +131,16 @@
 				6B161357201855EB00F51853 /* rustediron-streaks-roughness.png */,
 			);
 			path = Textures;
+			sourceTree = "<group>";
+		};
+		6B2E55A3209D654100B47ABD /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				6B99A6CE2064B95F0068079D /* SPTSessionExtenion.swift */,
+				6B99A6CA2064B5B80068079D /* UIImageViewExtension.swift */,
+				6BDC34892096DC93001F2F69 /* VectorExtension.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 		6B2E5EDE203159FC001C26DC /* Frameworks */ = {
@@ -219,7 +221,6 @@
 				6BA74A44201C3E9C0079194B /* greasy-pan-2-roughness.png in Resources */,
 				6BA74A42201C3E9C0079194B /* greasy-pan-2-normal.png in Resources */,
 				6BA74A43201C3E9C0079194B /* greasy-pan-2-albedo.png in Resources */,
-				6BA74A48201C41040079194B /* overlay_grid.png in Resources */,
 				6B16134A20184F4A00F51853 /* Assets.xcassets in Resources */,
 				6B16134820184F4A00F51853 /* Main.storyboard in Resources */,
 				6B941537201CF03D00CBEBF3 /* ambient.scnp in Resources */,
@@ -241,7 +242,6 @@
 				6B16134520184F4A00F51853 /* OrbViewController.swift in Sources */,
 				6B2E5EDD2031568C001C26DC /* MusicPickerViewController.swift in Sources */,
 				6B99A6CB2064B5B80068079D /* UIImageViewExtension.swift in Sources */,
-				6BA74A47201C41040079194B /* OverlayPlane.swift in Sources */,
 				6BDC348A2096DC93001F2F69 /* VectorExtension.swift in Sources */,
 				6BA74A4A201C4D880079194B /* Orb.swift in Sources */,
 				6B16134120184F4900F51853 /* AppDelegate.swift in Sources */,

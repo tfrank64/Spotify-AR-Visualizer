@@ -1,4 +1,3 @@
-
 import UIKit
 import SafariServices
 import AVFoundation
@@ -30,7 +29,7 @@ class MusicPickerViewController: UIViewController {
     func sdkSetup() {
         auth.clientID = "0064a012b4474a3e9255941f27f1f27d"
         auth.redirectURL = URL(string: "music-ar-login://callback")
-        auth.requestedScopes = [SPTAuthStreamingScope, SPTAuthPlaylistReadPrivateScope, SPTAuthPlaylistModifyPublicScope, SPTAuthPlaylistModifyPublicScope]
+        auth.requestedScopes = [SPTAuthStreamingScope, SPTAuthPlaylistReadPrivateScope, SPTAuthPlaylistModifyPublicScope]
         loginUrl = auth.spotifyWebAuthenticationURL()
         
         if let currentSession = SPTSession.getStoredSession() {
@@ -146,6 +145,7 @@ extension MusicPickerViewController: UITableViewDelegate, UITableViewDataSource 
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        // Load more playlists at this point
         if indexPath.item + 1 == self.masterPlaylistList.count {
             self.addNextPlaylistPage()
         }
@@ -177,42 +177,10 @@ extension MusicPickerViewController: UITableViewDelegate, UITableViewDataSource 
         tableView.deselectRow(at: indexPath, animated: true)
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         if indexPath.section == 0 {
-            
-            let handler = { (action: UIAlertAction) in
-                switch action.title! {
-                    case "Red": self.selectedParticleColor = UIColor.red
-                    case "Blue": self.selectedParticleColor = UIColor.blue
-                    case "Green": self.selectedParticleColor = UIColor.green
-                    case "Yellow": self.selectedParticleColor = UIColor.yellow
-                    case "Purple": self.selectedParticleColor = UIColor.purple
-                    case "Cyan": self.selectedParticleColor = UIColor.cyan
-                    case "Orange": self.selectedParticleColor = UIColor.orange
-                    default: self.selectedParticleColor = UIColor.blue
-                }
-            }
-            
             if indexPath.row == 0 {
-                // launch color settings
-                let colorMenu = UIAlertController(title: nil, message: "Select a color", preferredStyle: .actionSheet)
-                let redAction =  UIAlertAction(title: "Red", style: .default, handler: handler)
-                let blueAction =  UIAlertAction(title: "Blue", style: .default, handler: handler)
-                let greenAction =  UIAlertAction(title: "Green", style: .default, handler: handler)
-                let yellowAction =  UIAlertAction(title: "Yellow", style: .default, handler: handler)
-                let purpleAction =  UIAlertAction(title: "Purple", style: .default, handler: handler)
-                let cyanAction =  UIAlertAction(title: "Cyan", style: .default, handler: handler)
-                let orangeAction =  UIAlertAction(title: "Orange", style: .default, handler: handler)
-                let cancelAction =  UIAlertAction(title: "Cancel", style: .destructive, handler: nil)
-                colorMenu.addAction(redAction)
-                colorMenu.addAction(blueAction)
-                colorMenu.addAction(greenAction)
-                colorMenu.addAction(yellowAction)
-                colorMenu.addAction(purpleAction)
-                colorMenu.addAction(cyanAction)
-                colorMenu.addAction(orangeAction)
-                colorMenu.addAction(cancelAction)
-                self.present(colorMenu, animated: true, completion: nil)
+                self.handleColorSelection()
             } else {
-                // launch AR view, no song
+                // launch AR view, with no song
                 if let orbVC = storyboard.instantiateViewController(withIdentifier: "OrbViewController") as? OrbViewController {
                     orbVC.spotifyPlaylistURI = ""
                     orbVC.selectedParticleColor = self.selectedParticleColor
@@ -228,5 +196,40 @@ extension MusicPickerViewController: UITableViewDelegate, UITableViewDataSource 
             }
         }
         
+    }
+    
+    func handleColorSelection() {
+
+        let handler = { (action: UIAlertAction) in
+            switch action.title! {
+            case "Red": self.selectedParticleColor = UIColor.red
+            case "Blue": self.selectedParticleColor = UIColor.blue
+            case "Green": self.selectedParticleColor = UIColor.green
+            case "Yellow": self.selectedParticleColor = UIColor.yellow
+            case "Purple": self.selectedParticleColor = UIColor.purple
+            case "Cyan": self.selectedParticleColor = UIColor.cyan
+            case "Orange": self.selectedParticleColor = UIColor.orange
+            default: self.selectedParticleColor = UIColor.blue
+            }
+        }
+        
+        let colorMenu = UIAlertController(title: nil, message: "Select a color", preferredStyle: .actionSheet)
+        let redAction =  UIAlertAction(title: "Red", style: .default, handler: handler)
+        let blueAction =  UIAlertAction(title: "Blue", style: .default, handler: handler)
+        let greenAction =  UIAlertAction(title: "Green", style: .default, handler: handler)
+        let yellowAction =  UIAlertAction(title: "Yellow", style: .default, handler: handler)
+        let purpleAction =  UIAlertAction(title: "Purple", style: .default, handler: handler)
+        let cyanAction =  UIAlertAction(title: "Cyan", style: .default, handler: handler)
+        let orangeAction =  UIAlertAction(title: "Orange", style: .default, handler: handler)
+        let cancelAction =  UIAlertAction(title: "Cancel", style: .destructive, handler: nil)
+        colorMenu.addAction(redAction)
+        colorMenu.addAction(blueAction)
+        colorMenu.addAction(greenAction)
+        colorMenu.addAction(yellowAction)
+        colorMenu.addAction(purpleAction)
+        colorMenu.addAction(cyanAction)
+        colorMenu.addAction(orangeAction)
+        colorMenu.addAction(cancelAction)
+        self.present(colorMenu, animated: true, completion: nil)
     }
 }

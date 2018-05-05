@@ -1,10 +1,3 @@
-//
-//  VectorExtension.swift
-//  MusicAR
-//
-//  Created by Taylor Franklin on 4/30/18.
-//  Copyright © 2018 Taylor Franklin. All rights reserved.
-//
 
 import Foundation
 import ARKit
