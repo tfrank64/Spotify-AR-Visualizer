@@ -15,7 +15,7 @@ This is a sample iOS app I made just for fun to become more familiar with ARKit 
 
 ## Try It Yourself
 
-To try it out, you will need to change the Development Team in Xcode to your own so you can run on your own iOS device. **This will only work on devices that support ARKit, so iPhonee 6S and later**.
+To try it out, you will need to change the Development Team in Xcode to your own so you can run on your iOS device. **This will only work on devices that support ARKit, so iPhone 6S and later**.
 
 ### Thanks
 
